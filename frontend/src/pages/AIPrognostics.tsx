@@ -134,7 +134,7 @@ function SHAPPanel() {
           })}
         </div>
 
-        <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 text-[9px] font-mono text-slate-500">
+        <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 text-[9px] font-mono text-slate-500 break-words min-w-0">
           ⚠ {shap.disclaimer}
         </div>
       </div>
@@ -171,7 +171,7 @@ function DegradationTrend() {
         {/* Sparkline curve */}
         {last50.length > 1 && (
           <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/10">
-            <svg width="100%" height={70} className="overflow-visible">
+            <svg width="100%" height={70} viewBox="0 0 100 70" preserveAspectRatio="none">
               <defs>
                 <linearGradient id="grad-trend" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.4" />
@@ -180,7 +180,7 @@ function DegradationTrend() {
               </defs>
               <polyline
                 points={last50
-                  .map((v, i) => `${(i / (last50.length - 1)) * 100}%,${70 - (v / maxH) * 65}`)
+                  .map((v, i) => `${(i / (last50.length - 1)) * 100},${70 - (v / maxH) * 65}`)
                   .join(' ')}
                 fill="none"
                 stroke="#38bdf8"
@@ -320,12 +320,12 @@ export default function AIPrognostics() {
 
                 return (
                   <div key={fault} className="space-y-1.5">
-                    <div className="flex justify-between items-center text-xs font-mono">
-                      <span className={`tracking-wide ${isTop ? 'text-white font-bold' : 'text-slate-400'}`}>
+                    <div className="flex justify-between items-center text-xs font-mono gap-2 min-w-0">
+                      <span className={`tracking-wide truncate ${isTop ? 'text-white font-bold' : 'text-slate-400'}`}>
                         {isTop && '▶ '}
                         {fault.toUpperCase()}
                       </span>
-                      <span className="font-bold text-sm" style={{ color }}>
+                      <span className="font-bold text-sm flex-shrink-0" style={{ color }}>
                         {fmt(p * 100, 1)}%
                       </span>
                     </div>

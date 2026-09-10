@@ -39,13 +39,13 @@ export function SwarmNetPanel() {
   ];
 
   return (
-    <div
+    <div className="swarm-panel"
       style={{
         position: 'absolute',
         top: 38,
         right: 12,
         width: 310,
-        maxHeight: 'calc(100% - 48px)',
+        maxHeight: 'calc(100% - 140px)',
         overflowY: 'auto',
         background: 'rgba(5, 12, 20, 0.88)',
         backdropFilter: 'blur(10px)',

@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { initWebSocket, useStore } from './store/useStore';
 import { api } from './services/api';
+import { LiveSession } from './components/LiveSession';
 
 // Aerospace Components
 import { AerospaceNavbar, NavTab } from './components/aerospace/AerospaceNavbar';
@@ -15,7 +16,6 @@ import { AerospaceBackground } from './components/aerospace/AerospaceBackground'
 import { UAVHeroCenterpiece } from './components/aerospace/UAVHeroCenterpiece';
 import { TechSection } from './components/aerospace/TechSection';
 import { SpecsSection } from './components/aerospace/SpecsSection';
-import { GallerySection } from './components/aerospace/GallerySection';
 import { AerospaceFooter } from './components/aerospace/AerospaceFooter';
 import { ContactModal } from './components/aerospace/ContactModal';
 
@@ -49,6 +49,7 @@ function StatusBar() {
 
   return (
     <div
+      className="status-bar"
       style={{
         display: 'flex',
         alignItems: 'center',
@@ -87,7 +88,7 @@ function StatusBar() {
         <span style={{ color: '#1a2f4a' }}>|</span>
         <span className="hidden sm:inline">AEROVEX DEFENSE SYSTEMS</span>
         <span style={{ color: '#1a2f4a' }}>|</span>
-        <span>HIGH-ALTITUDE UAV PLATFORM</span>
+        <span>SIMULATED DATA · RESEARCH DEMO</span>
       </div>
     </div>
   );
@@ -118,9 +119,6 @@ export default function App() {
 
   useEffect(() => {
     const unsub = initWebSocket();
-    setTimeout(() => {
-      api.startSimulation().catch(() => {});
-    }, 800);
     return unsub;
   }, []);
 
@@ -153,7 +151,7 @@ export default function App() {
         <Suspense fallback={<LoadingScreen />}>
           {/* HOME PAGE: Crisp UAV Background + Hero Centerpiece (Image 2) */}
           {activeTab === 'home' && (
-            <div className="relative w-full h-full overflow-hidden flex flex-col justify-between">
+            <div className="home-scroll relative w-full h-full overflow-y-auto flex flex-col">
               <UAVHeroCenterpiece
                 onStartMission={() => setActiveTab('simulator')}
                 onExploreTech={() => setActiveTab('technology')}
@@ -183,20 +181,10 @@ export default function App() {
             </div>
           )}
 
-          {/* GALLERY PAGE */}
-          {activeTab === 'gallery' && (
-            <div className="relative w-full h-full overflow-y-auto overflow-x-hidden pt-16">
-              <GallerySection onLaunchMission={() => setActiveTab('simulator')} />
-              <AerospaceFooter
-                onSelectTab={(tab) => setActiveTab(tab)}
-                onLaunchMission={() => setActiveTab('simulator')}
-              />
-            </div>
-          )}
-
           {/* 3D MISSION SIMULATOR */}
           {activeTab === 'simulator' && (
             <div className="simulator-shell relative w-full h-full pt-20 flex flex-col">
+              <LiveSession />
               <MissionSimulator />
             </div>
           )}
@@ -234,10 +222,11 @@ export default function App() {
 
                 <div className="hidden sm:flex items-center gap-2 text-[10px] font-mono text-slate-400">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <span>TELEMETRY STREAM 10 Hz</span>
+                  <span>SHARED SIMULATION · 1 Hz</span>
                 </div>
               </div>
 
+              <LiveSession />
               {/* Active Operations View */}
               <div className="flex-1 overflow-hidden relative">
                 {opsTab === 'dashboard' && <Dashboard />}

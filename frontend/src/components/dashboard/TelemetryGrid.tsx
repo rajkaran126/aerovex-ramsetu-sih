@@ -115,15 +115,15 @@ function TelemetryCell({
       </div>
 
       {/* Bottom Metadata: Twin Residual or Twin Estimation */}
-      <div className="flex items-center justify-between mt-1 pt-1.5 border-t border-white/5 text-[9px] font-mono">
+      <div className="flex items-center justify-between mt-1 pt-1.5 border-t border-white/5 text-[9px] font-mono gap-1">
         {usingTwin ? (
-          <span className="text-amber-400 font-bold flex items-center gap-1">
-            <AlertTriangle className="w-2.5 h-2.5" />
+          <span className="text-amber-400 font-bold flex items-center gap-1 truncate">
+            <AlertTriangle className="w-2.5 h-2.5 flex-shrink-0" />
             TWIN EST.
           </span>
         ) : residual !== null ? (
           <span
-            className={`${
+            className={`truncate ${
               Math.abs(residual) > 20
                 ? 'text-amber-400 font-semibold'
                 : 'text-slate-500'
@@ -133,10 +133,10 @@ function TelemetryCell({
             {fmt(residual, 1)} {unit}
           </span>
         ) : (
-          <span className="text-slate-600">NOMINAL</span>
+          <span className="text-slate-600 truncate">NOMINAL</span>
         )}
 
-        <span className="text-[9px] text-slate-500 uppercase tracking-wider">
+        <span className="text-[9px] text-slate-500 uppercase tracking-wider flex-shrink-0">
           {state === 'critical' ? 'CRIT' : state === 'warning' ? 'WARN' : 'OK'}
         </span>
       </div>
@@ -151,22 +151,22 @@ export function TelemetryGrid() {
   const e = telemetry.expected;
 
   return (
-    <div className="glass-panel rounded-[1.5rem] p-5 h-full flex flex-col">
-      <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-sky-500/15 border border-sky-400/30 flex items-center justify-center text-sky-400">
+    <div className="glass-panel rounded-[1.5rem] p-5 h-full flex flex-col min-h-0">
+      <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10 gap-2 min-w-0">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-7 h-7 rounded-lg bg-sky-500/15 border border-sky-400/30 flex items-center justify-center text-sky-400 flex-shrink-0">
             <Activity className="w-4 h-4" />
           </div>
-          <div>
-            <h3 className="font-display font-bold text-sm text-white tracking-wide">
+          <div className="min-w-0">
+            <h3 className="font-display font-bold text-sm text-white tracking-wide truncate">
               ENGINE TELEMETRY MATRIX
             </h3>
-            <p className="text-[10px] font-mono text-slate-400 tracking-wider">
+            <p className="text-[10px] font-mono text-slate-400 tracking-wider truncate">
               ACTUAL // TWIN ESTIMATE // RESIDUAL VECTORS
             </p>
           </div>
         </div>
-        <span className="text-[10px] font-mono px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold tracking-widest">
+        <span className="text-[10px] font-mono px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold tracking-widest flex-shrink-0">
           10 CHANNELS
         </span>
       </div>

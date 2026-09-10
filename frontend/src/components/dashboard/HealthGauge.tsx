@@ -30,33 +30,32 @@ export function HealthGauge() {
     return `M ${s.x} ${s.y} A ${r} ${r} 0 ${large} 1 ${e.x} ${e.y}`;
   };
 
-  const startAngle = -45 + 90; // 45° from bottom-left
+  const startAngle = 225; // 45° from bottom-left
   const endAngle = startAngle + 270;
   const fillEnd = startAngle + (Math.max(0, Math.min(100, h)) / 100) * 270;
 
   return (
     <div className="glass-panel rounded-[1.5rem] p-5 text-center flex flex-col justify-between">
-      {/* Header */}
-      <div className="flex items-center justify-between pb-3 mb-2 border-b border-white/10">
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-lg bg-emerald-500/15 border border-emerald-400/30 flex items-center justify-center text-emerald-400">
+      <div className="flex items-center justify-between pb-3 mb-2 border-b border-white/10 gap-2 min-w-0">
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="w-6 h-6 rounded-lg bg-emerald-500/15 border border-emerald-400/30 flex items-center justify-center text-emerald-400 flex-shrink-0">
             <Shield className="w-3.5 h-3.5" />
           </div>
-          <span className="font-display font-bold text-xs text-white tracking-wider">
+          <span className="font-display font-bold text-xs text-white tracking-wider truncate">
             HEALTH INDEX
           </span>
         </div>
-        <span className="text-[9px] font-mono text-slate-400 uppercase tracking-widest">
+        <span className="text-[9px] font-mono text-slate-400 uppercase tracking-widest truncate">
           PHYSICS + AI
         </span>
       </div>
 
       {/* SVG Arc Gauge */}
       <div className="relative inline-block my-1 mx-auto">
-        <svg width={150} height={120} viewBox="0 0 150 120">
+        <svg width={150} height={150} viewBox="0 0 150 150">
           {/* Background arc */}
           <path
-            d={describeArc(75, 85, 58, startAngle, endAngle)}
+            d={describeArc(75, 75, 58, startAngle, endAngle)}
             stroke="rgba(255,255,255,0.08)"
             strokeWidth={10}
             fill="none"
@@ -64,7 +63,7 @@ export function HealthGauge() {
           />
           {/* Fill arc */}
           <path
-            d={describeArc(75, 85, 58, startAngle, fillEnd)}
+            d={describeArc(75, 75, 58, startAngle, fillEnd)}
             stroke={color}
             strokeWidth={10}
             fill="none"
@@ -77,8 +76,8 @@ export function HealthGauge() {
           {/* Tick marks */}
           {[0, 25, 50, 75, 100].map(tick => {
             const angle = startAngle + (tick / 100) * 270;
-            const inner = polarToCartesian(75, 85, 47, angle);
-            const outer = polarToCartesian(75, 85, 56, angle);
+            const inner = polarToCartesian(75, 75, 47, angle);
+            const outer = polarToCartesian(75, 75, 56, angle);
             return (
               <line
                 key={tick}
@@ -94,7 +93,7 @@ export function HealthGauge() {
         </svg>
 
         {/* Center value */}
-        <div className="absolute top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
           <div
             className="text-3xl font-black font-mono tracking-tight"
             style={{ color, textShadow: `0 0 20px ${color}66` }}
@@ -195,20 +194,20 @@ export function RULPanel() {
       </div>
 
       <div
-        className="p-2.5 rounded-xl border flex items-center justify-between font-mono text-[10px] mb-2 gap-2"
+        className="p-2.5 rounded-xl border flex items-center justify-between font-mono text-[10px] mb-2 gap-2 min-w-0"
         style={{
           background: isSufficient ? 'rgba(16,185,129,0.08)' : 'rgba(244,63,94,0.08)',
           borderColor: isSufficient ? 'rgba(16,185,129,0.3)' : 'rgba(244,63,94,0.3)',
         }}
       >
-        <span className="text-slate-300 whitespace-nowrap">RUL MISSION MARGIN:</span>
-        <span className="font-bold font-mono text-right" style={{ color }}>
+        <span className="text-slate-300 truncate">RUL MISSION MARGIN:</span>
+        <span className="font-bold font-mono text-right flex-shrink-0" style={{ color }}>
           {margin >= 0 ? '+' : ''}
           {margin.toFixed(2)}h // {isSufficient ? 'SUFFICIENT' : 'ABORT'}
         </span>
       </div>
 
-      <div className="text-[9px] font-mono text-slate-500 text-center">
+      <div className="text-[9px] font-mono text-slate-500 text-center truncate">
         CONFIDENCE: {Math.round((rul.rul_confidence ?? 0) * 100)}% // ZERO-INTRUSION MODEL
       </div>
     </div>
@@ -247,17 +246,17 @@ export function MissionRiskPanel() {
 
   return (
     <div className="glass-panel rounded-[1.5rem] p-5">
-      <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-lg bg-rose-500/15 border border-rose-400/30 flex items-center justify-center text-rose-400">
+      <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10 gap-2 min-w-0">
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="w-6 h-6 rounded-lg bg-rose-500/15 border border-rose-400/30 flex items-center justify-center text-rose-400 flex-shrink-0">
             <AlertTriangle className="w-3.5 h-3.5" />
           </div>
-          <span className="font-display font-bold text-xs text-white tracking-wider">
+          <span className="font-display font-bold text-xs text-white tracking-wider truncate">
             MISSION PARETO RISK
           </span>
         </div>
         <span
-          className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold tracking-widest uppercase border"
+          className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold tracking-widest uppercase border flex-shrink-0"
           style={{
             background: currentTheme.bg,
             borderColor: currentTheme.border,

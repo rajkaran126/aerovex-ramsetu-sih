@@ -196,7 +196,10 @@ async def pause_simulation():
 
 @app.post("/api/simulation/reset")
 async def reset_simulation():
-    orchestrator.simulator.reset()
+    orchestrator.load_scenario("HEALTHY_ISR")
+    orchestrator._full_system_state = orchestrator._step_simulation() or {}
+    orchestrator.simulator.pause()
+    await orchestrator._broadcast(orchestrator.get_full_state())
     return {"status": "reset"}
 
 
@@ -477,7 +480,18 @@ async def generate_aero_twin_dataset():
 @app.post("/api/system/groq-key")
 async def set_groq_api_key(request: GroqKeyUpdateRequest):
     """Dynamically configure or update single GROQ_API_KEY without code modifications"""
-    success = groq_orchestrator.set_api_key(request.api_key)
+    key = request.api_key.strip()
+    if not key.startswith("gsk_") or len(key) < 20:
+        raise HTTPException(status_code=400, detail="Enter a valid Groq API key")
+    import httpx
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get("https://api.groq.com/openai/v1/models", headers={"Authorization": f"Bearer {key}"})
+        if response.status_code != 200:
+            raise HTTPException(status_code=400, detail="Groq could not validate this key. Check your account and retry.")
+    except httpx.RequestError:
+        raise HTTPException(status_code=503, detail="Groq is unreachable. Key was not changed.")
+    success = groq_orchestrator.set_api_key(key)
     if not success:
         raise HTTPException(status_code=400, detail="Invalid Groq API key format")
     return {"status": "configured", "online": True, "notice": "GROQ INTELLIGENCE ONLINE"}

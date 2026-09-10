@@ -195,7 +195,8 @@ class AeroTwinOrchestrator:
             try:
                 q.put_nowait(state)
             except asyncio.QueueFull:
-                pass  # skip if consumer is slow
+                q.get_nowait()  # discard oldest so slow clients converge to current state
+                q.put_nowait(state)
             except Exception:
                 dead.append(q)
         for q in dead:
@@ -212,7 +213,7 @@ class AeroTwinOrchestrator:
                 state = self._step_simulation()
                 if state:
                     self._full_system_state = state
-                    await self._broadcast(state)
+                await self._broadcast(self.get_full_state())
             except Exception as e:
                 logger.error(f"Simulation step error: {e}", exc_info=True)
 
@@ -469,7 +470,24 @@ class AeroTwinOrchestrator:
     # ── Public API ─────────────────────────────────────────────────────────
 
     def get_full_state(self) -> Dict:
-        return self._full_system_state or {}
+        sim = self.simulator.get_state()
+        snapshot = dict(self._full_system_state or {})
+        snapshot.update({
+            "step": sim.step,
+            "simulation_time_s": sim.simulation_time_s,
+            "simulation_status": sim.status.value,
+            "speed_multiplier": sim.speed_multiplier,
+        })
+        snapshot["mission"] = {
+            **snapshot.get("mission", {}),
+            "profile": sim.mission_profile, "environment": sim.environment,
+            "throttle": sim.throttle, "altitude_ft": sim.altitude_ft,
+            "ambient_temp_c": sim.ambient_temp_c,
+            "active_fault": sim.active_fault.value, "fault_severity": sim.fault_severity,
+            "elapsed_hours": sim.mission_elapsed_hours, "remaining_hours": sim.mission_remaining_hours,
+            "duration_hours": sim.mission_duration_hours, "progress_pct": sim.mission_progress_pct,
+        }
+        return snapshot
 
     def get_replay_events(self) -> List[Dict]:
         return self._replay_events[-200:]
