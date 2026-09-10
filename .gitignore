@@ -1,0 +1,51 @@
+# Dependencies & build outputs
+node_modules/
+dist/
+dist-ssr/
+
+# Python & testing
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+.eggs/
+
+# Environments & IDEs
+.env
+.venv/
+venv/
+ENV/
+.idea/
+.vscode/
+*.swp
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS metadata & logs
+.DS_Store
+Thumbs.db
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Database & local runtime data
+*.sqlite3
+*.db
+backend/aero_twin.db
+
+# Raw downloaded archives and raw asset download folders (processed models live in frontend/public/models/)
+*.zip
+*.tar.gz
+a-forest-3-with-a-road-at-night-for-game/
+free-ocean-wave-animation/
+icy-terrain-export/
+mount-everest-himalayan-mountains/
+rocky-desert-terrain/

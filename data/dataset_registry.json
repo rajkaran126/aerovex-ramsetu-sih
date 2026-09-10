@@ -1,0 +1,51 @@
+{
+  "aero_twin": {
+    "status": "ready",
+    "available": true,
+    "type": "synthetic",
+    "domain": "aero-piston",
+    "description": "Primary MALE UAV aero-piston engine physics & telemetry dataset",
+    "records": 4000,
+    "path": "raw/aero_twin"
+  },
+  "cmapss": {
+    "status": "awaiting_files",
+    "available": false,
+    "type": "external",
+    "domain": "turbofan",
+    "source_url": "https://data.nasa.gov/dataset/cmapss-jet-engine-simulated-data",
+    "description": "NASA C-MAPSS Turbofan Engine Run-to-Failure benchmark",
+    "subsets": [],
+    "path": "raw/cmapss"
+  },
+  "n_cmapss": {
+    "status": "awaiting_files",
+    "available": false,
+    "type": "external",
+    "domain": "turbofan",
+    "source_url": "https://github.com/mohyunho/N-CMAPSS_DL",
+    "description": "NASA N-CMAPSS New High-Fidelity Turbofan benchmark",
+    "files": [],
+    "path": "raw/n_cmapss"
+  },
+  "ml_olympiad": {
+    "status": "awaiting_files",
+    "available": false,
+    "type": "external",
+    "domain": "turbofan",
+    "source_url": "https://www.kaggle.com/competitions/ml-olympiad-predictive-maintenance/data",
+    "description": "ML Olympiad Predictive Maintenance multivariate time-series competition dataset",
+    "has_train": false,
+    "has_test": false,
+    "path": "raw/ml_olympiad"
+  },
+  "additional": {
+    "status": "awaiting_files",
+    "available": false,
+    "type": "external",
+    "domain": "custom",
+    "files": [],
+    "description": "Optional verified external dataset (Vibration / Fault Diagnosis)",
+    "path": "raw/additional"
+  }
+}
