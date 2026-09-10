@@ -135,7 +135,7 @@ export default function Maintenance() {
         <div className="lg:col-span-8 flex flex-col gap-4">
           <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex items-start gap-3">
             <AlertTriangle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
-            <div className="text-xs font-mono text-amber-200 leading-relaxed">
+            <div className="text-xs font-mono text-amber-200 leading-relaxed break-words min-w-0">
               <strong>RESEARCH ADVISORY DIRECTIVE:</strong> Grounded in real-time thermodynamic state estimation and synthetic failure regression models. Certified field personnel sign-off required prior to flight clearance.
             </div>
           </div>
@@ -198,10 +198,10 @@ export default function Maintenance() {
                     </div>
                   </div>
 
-                  <h4 className="text-sm sm:text-base font-bold text-white tracking-wide mb-1 font-display">
+                  <h4 className="text-sm sm:text-base font-bold text-white tracking-wide mb-1 font-display break-words min-w-0">
                     {rec.action}
                   </h4>
-                  <p className="text-xs text-slate-400 font-light leading-relaxed font-mono">
+                  <p className="text-xs text-slate-400 font-light leading-relaxed font-mono break-words min-w-0">
                     {rec.reason}
                   </p>
                 </div>

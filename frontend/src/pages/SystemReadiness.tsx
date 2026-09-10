@@ -69,11 +69,12 @@ export default function SystemReadiness() {
     {
       sender: 'SYSTEM',
       role: 'system',
-      content: 'AERO-TWIN Multi-Agent Intelligence Hub online. Zero-trust telemetry monitoring active.',
+      content: 'Intelligence console ready. Configure Groq for chat; numerical monitoring uses the shared simulation stream.',
       timestamp: new Date().toLocaleTimeString(),
     },
   ]);
 
+  const connected = useStore(s => s.connected);
   const { telemetry, health, missionRisk, mission } = useStore(s => ({
     telemetry: s.telemetry,
     health: s.health,
@@ -202,7 +203,7 @@ export default function SystemReadiness() {
       {/* ─── Top Header with Glowing Vertical Accent Bar ─── */}
       <SectionHeader
         title="SYSTEM READINESS & RESOURCE MATRIX"
-        kicker="TRL-9 MISSION PRE-FLIGHT VERIFICATION"
+        kicker="SIMULATION RESOURCE VERIFICATION"
         subtitle="Live telemetry validation, AI model inference checks, dataset telemetry status, and cross-agent orchestrator."
         badge={
           <Badge
@@ -236,27 +237,27 @@ export default function SystemReadiness() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           label="SUBSYSTEM HEALTH"
-          value="100%"
-          subvalue="10 / 10 Online"
+          value={readiness ? `${Object.values(readiness.subsystems).filter(Boolean).length} / ${Object.keys(readiness.subsystems).length}` : "--"}
+          subvalue="Subsystem checks"
           icon={<ShieldCheck className="w-6 h-6" />}
           color="emerald"
           trend={{ direction: 'up', text: 'NOMINAL' }}
         />
         <StatCard
           label="AI INFERENCE MODELS"
-          value="TRL-9"
-          subvalue="3 Engines Active"
+          value={readiness ? `${Object.values(readiness.models).filter(Boolean).length} / 3` : "--"}
+          subvalue="Model artifacts found"
           icon={<Cpu className="w-6 h-6" />}
           color="cyan"
           trend={{ direction: 'up', text: 'OPTIMIZED' }}
         />
         <StatCard
           label="TELEMETRY STREAM"
-          value="10 Hz"
-          subvalue="Zero-Latency Link"
+          value={connected ? "1 Hz" : "Offline"}
+          subvalue="Configured publish rate"
           icon={<Activity className="w-6 h-6" />}
           color="blue"
-          trend={{ direction: 'neutral', text: 'STABLE' }}
+          trend={{ direction: 'neutral', text: connected ? 'CONNECTED' : 'OFFLINE' }}
         />
         <StatCard
           label="INTELLIGENCE ENGINE"
@@ -462,7 +463,7 @@ export default function SystemReadiness() {
                     </span>
                     <span className="text-slate-500">{m.timestamp}</span>
                   </div>
-                  <div className="whitespace-pre-wrap leading-relaxed font-light">{m.content}</div>
+                  <div className="whitespace-pre-wrap leading-relaxed font-light break-words min-w-0">{m.content}</div>
                 </div>
               ))}
               {chatLoading && (

@@ -41,9 +41,7 @@ export const AerospaceFooter: React.FC<AerospaceFooterProps> = ({
           <button onClick={() => onSelectTab('specifications')} className="hover:text-white transition-colors">
             Specifications
           </button>
-          <button onClick={() => onSelectTab('gallery')} className="hover:text-white transition-colors">
-            Theatres
-          </button>
+
           <button onClick={onLaunchMission} className="text-sky-400 hover:text-sky-300 transition-colors font-semibold">
             3D Simulator
           </button>

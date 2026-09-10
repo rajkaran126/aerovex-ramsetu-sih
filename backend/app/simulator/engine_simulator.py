@@ -359,7 +359,7 @@ class EngineSimulator:
         output_dict = self._apply_sensor_injections(output_dict)
 
         # ── Update UAV position ──────────────────────────────────────────────
-        self._update_uav_position(dt)
+        self._update_flight_path(dt)
 
         self._state.engine_outputs = output_dict
 

@@ -62,6 +62,8 @@ export interface SystemState {
   step: number;
   simulationTime: number;
   isRunning: boolean;
+  simulationStatus: 'STOPPED' | 'RUNNING' | 'PAUSED';
+  commandError: string;
 
   // Mission
   mission: {
@@ -232,6 +234,8 @@ const defaultState: SystemState = {
   step: 0,
   simulationTime: 0,
   isRunning: false,
+  simulationStatus: 'STOPPED',
+  commandError: '',
   mission: {
     profile: 'ISR',
     environment: 'MOUNTAIN',
@@ -331,13 +335,17 @@ const storeApi = createStore<SystemState & Actions>((set, get) => ({
   updateFromBackend: (data: any) => {
     const prev = get();
     const newHealth = data.health?.index ?? prev.health.index;
-    const history = [...prev.healthHistory.slice(-299), newHealth];
+    const baseHistory = data.step < prev.step ? [] : prev.healthHistory;
+    const history = data.step !== prev.step ? [...baseHistory.slice(-299), newHealth] : baseHistory;
 
     // If manual flight is active, keep local uav position/heading/alt instead of snapping
     const uavData = prev.manualFlight && prev.uav ? prev.uav : (data.uav ?? prev.uav);
 
     set({
       step: data.step ?? prev.step,
+      isRunning: data.simulation_status === 'RUNNING',
+      simulationStatus: data.simulation_status ?? prev.simulationStatus,
+      speedMultiplier: data.speed_multiplier ?? prev.speedMultiplier,
       simulationTime: data.simulation_time_s ?? prev.simulationTime,
       lastUpdate: Date.now(),
       mission: data.mission ?? prev.mission,
@@ -418,15 +426,11 @@ export const useStore = Object.assign(
   storeApi
 );
 
-// Initialize WebSocket connection and feed store
+// One shared stream for every page, including connection lifecycle changes.
 export function initWebSocket() {
-  const store = useStore.getState();
-
-  const unsub = wsService.subscribe((data) => {
-    useStore.getState().updateFromBackend(data);
-    useStore.getState().setConnected(true);
+  const connection = wsService.onConnection(connected => useStore.setState({ connected }));
+  const unsubscribe = wsService.subscribe(data => {
+    if (typeof data.step === 'number') useStore.getState().updateFromBackend(data);
   });
-
-  wsService.connect();
-  return unsub;
+  return () => { unsubscribe(); connection(); wsService.disconnect(); };
 }

@@ -201,14 +201,11 @@ function ViewSelector() {
           return (
             <button
               key={t.key}
-              onClick={() => {
-                setEnvironment(t.key);
-                useStore.getState().updateUavFlight({
-                  lat: t.defaultLat,
-                  lon: t.defaultLon,
-                  altitude_ft: t.defaultAlt,
-                });
-                api.setMission(mission.profile, t.key).catch(() => {});
+              onClick={async () => {
+                try {
+                  await api.setMission(mission.profile, t.key);
+                  useStore.getState().updateFromBackend(await api.getState());
+                } catch { /* Shared request feedback reports the failure. */ }
               }}
               className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-mono transition-all whitespace-nowrap ${
                 isActive
@@ -338,12 +335,12 @@ function AIFlowOverlay() {
       </div>
       <div className="space-y-2">
         {steps.map((s, i) => (
-          <div key={i} className="flex items-center gap-3 text-xs font-mono">
-            <div className="w-28 text-[10px] text-slate-400 text-right font-bold tracking-wider">
+          <div key={i} className="flex items-center gap-3 text-xs font-mono min-w-0">
+            <div className="w-28 text-[10px] text-slate-400 text-right font-bold tracking-wider flex-shrink-0">
               {s.label}
             </div>
-            <div className="w-1 h-5 bg-cyan-400/40 rounded-full" />
-            <div className="flex-1 font-bold truncate" style={{ color: s.color }}>
+            <div className="w-1 h-5 bg-cyan-400/40 rounded-full flex-shrink-0" />
+            <div className="flex-1 font-bold truncate min-w-0" style={{ color: s.color }}>
               {s.value}
             </div>
           </div>
@@ -599,9 +596,9 @@ function WhatIfPanel() {
                 value: `${fmt((whatIfResult.mission_completion_probability || 0) * 100, 0)}%`,
               },
             ].map(({ label, value }) => (
-              <div key={label} className="flex justify-between text-xs">
-                <span className="text-slate-400">{label}</span>
-                <span className="font-bold text-white">{value}</span>
+              <div key={label} className="flex justify-between text-xs gap-2 min-w-0">
+                <span className="text-slate-400 truncate">{label}</span>
+                <span className="font-bold text-white truncate flex-shrink-0">{value}</span>
               </div>
             ))}
           </div>
@@ -632,7 +629,7 @@ function SimulationCanvas({ view }: { view: SimView }) {
   }, [environment]);
 
   return (
-    <div className="relative w-full h-full overflow-hidden rounded-2xl bg-black/40 border border-white/10">
+    <div className="simulation-canvas relative w-full h-full overflow-hidden rounded-2xl bg-black/40 border border-white/10">
       <Suspense
         fallback={
           <div className="h-full flex items-center justify-center font-mono text-cyan-400 text-xs tracking-widest animate-pulse">
@@ -644,7 +641,7 @@ function SimulationCanvas({ view }: { view: SimView }) {
       </Suspense>
 
       {/* 3D Model Telemetry Badge */}
-      <div className="absolute top-3 left-3 z-10 pointer-events-none flex items-center gap-2 px-2.5 py-1 rounded-lg bg-slate-950/75 border border-cyan-500/30 backdrop-blur-md shadow-[0_4px_16px_rgba(0,0,0,0.5)]">
+      <div className="mesh-badge z-10 pointer-events-none flex items-center gap-2 px-2.5 py-1 rounded-lg bg-slate-950/75 border border-cyan-500/30 backdrop-blur-md shadow-[0_4px_16px_rgba(0,0,0,0.5)]">
         <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]" />
         <span className="text-[10px] font-mono text-cyan-300 font-bold tracking-wider">
           3D MESH: {modelInfo.name}
@@ -658,7 +655,7 @@ function SimulationCanvas({ view }: { view: SimView }) {
       <GPSTacticalHUD />
 
       {/* Interactive 3D UAV Flight Joystick with Keyboard Support */}
-      <FlightJoystick />
+      {view !== 'swarm' && view !== 'ai' && view !== 'cockpit' && <FlightJoystick />}
 
       {view === 'cockpit' && <CockpitHUD />}
       {view === 'ai' && <AIFlowOverlay />}
@@ -676,12 +673,12 @@ export default function MissionSimulator() {
   }));
 
   return (
-    <div className="w-full h-full flex flex-col overflow-hidden pb-2">
+    <div className="simulator-page w-full h-full flex flex-col overflow-y-auto pb-2">
       {/* Top Floating View & Theatre Selector */}
       <ViewSelector />
 
       {/* Main Content Grid: 3D Viewport + Side Controls */}
-      <div className="flex-1 px-3 grid grid-cols-1 lg:grid-cols-12 gap-3 overflow-hidden min-h-0">
+      <div className="simulator-grid px-3 grid grid-cols-1 lg:grid-cols-12 gap-3">
         {/* 3D Simulation Canvas (9 Cols) */}
         <div className="lg:col-span-9 flex flex-col gap-2 overflow-hidden">
           <div className="flex-1 min-h-0">

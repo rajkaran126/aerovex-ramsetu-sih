@@ -38,16 +38,16 @@ function FaultPanel() {
 
   return (
     <div className="glass-panel rounded-[1.5rem] p-5 flex flex-col h-full">
-      <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-lg bg-purple-500/15 border border-purple-400/30 flex items-center justify-center text-purple-400">
+      <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10 gap-2 min-w-0">
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="w-6 h-6 rounded-lg bg-purple-500/15 border border-purple-400/30 flex items-center justify-center text-purple-400 flex-shrink-0">
             <Cpu className="w-3.5 h-3.5" />
           </div>
-          <span className="font-display font-bold text-xs text-white tracking-wider">
+          <span className="font-display font-bold text-xs text-white tracking-wider truncate">
             FAULT CLASSIFIER
           </span>
         </div>
-        <span className="text-[9px] font-mono text-slate-400 uppercase tracking-widest">
+        <span className="text-[9px] font-mono text-slate-400 uppercase tracking-widest truncate">
           RANDOM FOREST // 7-CLASS
         </span>
       </div>
@@ -137,16 +137,16 @@ function IntegrityPanel() {
 
   return (
     <div className="glass-panel rounded-[1.5rem] p-5 flex flex-col h-full">
-      <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-lg bg-cyan-500/15 border border-cyan-400/30 flex items-center justify-center text-cyan-400">
+      <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10 gap-2 min-w-0">
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="w-6 h-6 rounded-lg bg-cyan-500/15 border border-cyan-400/30 flex items-center justify-center text-cyan-400 flex-shrink-0">
             <ShieldCheck className="w-3.5 h-3.5" />
           </div>
-          <span className="font-display font-bold text-xs text-white tracking-wider">
+          <span className="font-display font-bold text-xs text-white tracking-wider truncate">
             TELEMETRY INTEGRITY
           </span>
         </div>
-        <span className="text-[9px] font-mono text-slate-400 uppercase tracking-widest">
+        <span className="text-[9px] font-mono text-slate-400 uppercase tracking-widest truncate">
           ZERO-TRUST DEFENSE
         </span>
       </div>
@@ -162,7 +162,7 @@ function IntegrityPanel() {
             </div>
           </div>
           <span
-            className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold tracking-wider uppercase border"
+            className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold tracking-wider uppercase border max-w-[140px] truncate"
             style={{
               background: `${color}15`,
               borderColor: `${color}40`,
@@ -273,17 +273,17 @@ function AlertPanel() {
 
   return (
     <div className="glass-panel rounded-[1.5rem] p-5 flex flex-col h-full">
-      <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-lg bg-amber-500/15 border border-amber-400/30 flex items-center justify-center text-amber-400">
+      <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10 gap-2 min-w-0">
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="w-6 h-6 rounded-lg bg-amber-500/15 border border-amber-400/30 flex items-center justify-center text-amber-400 flex-shrink-0">
             <AlertTriangle className="w-3.5 h-3.5" />
           </div>
-          <span className="font-display font-bold text-xs text-white tracking-wider">
+          <span className="font-display font-bold text-xs text-white tracking-wider truncate">
             TACTICAL ADVISORIES
           </span>
         </div>
         <span
-          className={`px-2 py-0.5 rounded-full text-[9px] font-mono font-bold tracking-widest uppercase border ${
+          className={`px-2 py-0.5 rounded-full text-[9px] font-mono font-bold tracking-widest uppercase border flex-shrink-0 ${
             alerts.length > 0
               ? 'bg-amber-500/15 text-amber-400 border-amber-500/30'
               : 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
@@ -312,90 +312,10 @@ function AlertPanel() {
               }`}
             >
               <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
-              <span>{a.msg}</span>
+              <span className="break-words min-w-0">{a.msg}</span>
             </div>
           ))
         )}
-      </div>
-    </div>
-  );
-}
-
-// ── Mission Info Bar ──────────────────────────────────────────────────────
-function MissionBar() {
-  const { mission, step, connected, edgeMode } = useStore(s => ({
-    mission: s.mission,
-    step: s.step,
-    connected: s.connected,
-    edgeMode: s.edgeMode,
-  }));
-
-  const handleStart = () => api.startSimulation();
-  const handlePause = () => api.pauseSimulation();
-  const handleReset = () => api.resetSimulation();
-
-  return (
-    <div className="glass-panel mx-5 mt-3 p-3.5 rounded-2xl flex items-center justify-between gap-4 flex-wrap">
-      {/* Brand & Connection Pill */}
-      <div className="flex items-center gap-3">
-        <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_12px_#34d399] animate-pulse" />
-        <div>
-          <div className="font-display font-black text-sm tracking-[0.2em] text-white">
-            AERO-TWIN
-          </div>
-          <div className="font-mono text-[9px] text-cyan-400 tracking-wider">
-            {connected ? 'LIVE TELEMETRY STREAM' : 'DISCONNECTED'}
-          </div>
-        </div>
-        {edgeMode && (
-          <span className="px-2.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 font-mono text-[9px] font-bold tracking-widest uppercase">
-            EDGE MODE
-          </span>
-        )}
-      </div>
-
-      {/* Mission Specs Tiles */}
-      <div className="flex items-center gap-3 sm:gap-5 flex-wrap">
-        {[
-          { label: 'PROFILE', value: mission.profile || 'PATROL' },
-          { label: 'THEATRE', value: mission.environment || 'STANDARD' },
-          { label: 'ALTITUDE', value: `${Math.round(mission.altitude_ft || 15000).toLocaleString()} ft` },
-          { label: 'THROTTLE', value: `${Math.round((mission.throttle || 0.75) * 100)}%` },
-          { label: 'REMAINING', value: `${fmt(mission.remaining_hours || 4.2)}h` },
-          { label: 'STEP', value: step.toString() },
-        ].map(({ label, value }) => (
-          <div key={label} className="text-center">
-            <div className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-400">
-              {label}
-            </div>
-            <div className="text-xs font-mono font-bold text-white mt-0.5">{value}</div>
-          </div>
-        ))}
-      </div>
-
-      {/* Simulation Controls */}
-      <div className="flex items-center gap-2">
-        <button
-          onClick={handleStart}
-          className="glass-button flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold font-mono tracking-wider text-emerald-300 bg-emerald-500/15 hover:bg-emerald-500/30 border-emerald-400/40 transition-all shadow-[0_0_12px_rgba(16,185,129,0.25)]"
-        >
-          <Play className="w-3 h-3 fill-emerald-300" />
-          <span>START</span>
-        </button>
-        <button
-          onClick={handlePause}
-          className="glass-button flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold font-mono tracking-wider text-amber-300 bg-amber-500/15 hover:bg-amber-500/30 border-amber-400/40 transition-all"
-        >
-          <Pause className="w-3 h-3" />
-          <span>PAUSE</span>
-        </button>
-        <button
-          onClick={handleReset}
-          className="glass-button flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold font-mono tracking-wider text-slate-300 bg-white/5 hover:bg-white/10 border-white/20 transition-all"
-        >
-          <RotateCcw className="w-3 h-3" />
-          <span>RESET</span>
-        </button>
       </div>
     </div>
   );
@@ -414,16 +334,16 @@ function DegradationPanel() {
 
   return (
     <div className="glass-panel rounded-[1.5rem] p-5 flex flex-col h-full">
-      <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-lg bg-rose-500/15 border border-rose-400/30 flex items-center justify-center text-rose-400">
+      <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10 gap-2 min-w-0">
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="w-6 h-6 rounded-lg bg-rose-500/15 border border-rose-400/30 flex items-center justify-center text-rose-400 flex-shrink-0">
             <Flame className="w-3.5 h-3.5" />
           </div>
-          <span className="font-display font-bold text-xs text-white tracking-wider">
+          <span className="font-display font-bold text-xs text-white tracking-wider truncate">
             DEGRADATION STATE
           </span>
         </div>
-        <span className="text-[9px] font-mono text-slate-400 uppercase tracking-widest">
+        <span className="text-[9px] font-mono text-slate-400 uppercase tracking-widest truncate">
           PHYSICS TWIN
         </span>
       </div>
@@ -465,13 +385,13 @@ function DegradationPanel() {
 // ── Main Dashboard ────────────────────────────────────────────────────────
 export default function Dashboard() {
   return (
-    <div className="w-full h-full flex flex-col overflow-hidden pb-4">
+    <div className="dashboard-page w-full h-full flex flex-col overflow-y-auto pb-4">
       {/* Top Mission Control Bar */}
-      <MissionBar />
 
-      <div className="flex-1 px-5 pb-3 pt-2 grid grid-cols-1 lg:grid-cols-12 gap-4 overflow-hidden min-h-0">
+
+      <div className="dashboard-grid px-5 pb-3 pt-2 grid grid-cols-1 lg:grid-cols-12 gap-4">
         {/* Left Column: Health Gauge + Degradation Panel (3 Cols) */}
-        <div className="lg:col-span-3 flex flex-col gap-4 overflow-hidden">
+        <div className="lg:col-span-3 flex flex-col gap-4 min-h-0 overflow-hidden">
           <div className="flex-shrink-0">
             <HealthGauge />
           </div>
@@ -481,7 +401,7 @@ export default function Dashboard() {
         </div>
 
         {/* Center Column: Telemetry Matrix + Fault Classifier & Integrity (6 Cols) */}
-        <div className="lg:col-span-6 flex flex-col gap-4 overflow-hidden">
+        <div className="lg:col-span-6 flex flex-col gap-4 min-h-0 overflow-hidden">
           <div className="flex-1 min-h-0">
             <TelemetryGrid />
           </div>
@@ -492,7 +412,7 @@ export default function Dashboard() {
         </div>
 
         {/* Right Column: RUL Prediction + Pareto Risk + Advisories (3 Cols) */}
-        <div className="lg:col-span-3 flex flex-col gap-4 overflow-hidden">
+        <div className="lg:col-span-3 flex flex-col gap-4 min-h-0 overflow-hidden">
           <div className="flex-shrink-0">
             <RULPanel />
           </div>

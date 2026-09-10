@@ -158,10 +158,10 @@ class GroqMultiAgentOrchestrator:
                         "online": True,
                     }
                 else:
-                    logger.warning(f"Groq API returned HTTP {res.status_code}: {res.text}")
+                    logger.warning("Groq API returned HTTP %s", res.status_code)
                     return {
                         "status": "api_error",
-                        "response": f"Groq API returned code {res.status_code}: {res.text}",
+                        "response": f"Groq request failed (HTTP {res.status_code}). Check your key, model access and quota.",
                         "online": False,
                     }
         except Exception as e:

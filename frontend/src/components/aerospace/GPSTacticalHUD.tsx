@@ -59,7 +59,7 @@ export function GPSTacticalHUD() {
   const lonDMS = toDMS(uav.lon || 77.5771, false);
 
   return (
-    <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 pointer-events-none">
+    <div className="gps-hud z-20 pointer-events-none">
       <div className="flex items-center gap-3 px-3.5 py-1.5 rounded-2xl bg-slate-950/85 border border-cyan-500/40 backdrop-blur-xl shadow-[0_4px_24px_rgba(0,0,0,0.6)] font-mono text-white text-xs">
         {/* NavIC Satellite Lock Indicator */}
         <div className="flex items-center gap-1.5 pr-2.5 border-r border-white/15">
