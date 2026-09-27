@@ -114,14 +114,88 @@ MISSION_PROFILES = {
 
 
 ENVIRONMENTS = {
-    "MOUNTAIN": {"name": "Mountain", "altitude_offset": 3000, "temp_offset": -8, "turbulence": 0.3},
-    "DESERT": {"name": "Desert", "altitude_offset": 0, "temp_offset": 25, "turbulence": 0.15},
-    "MARITIME": {"name": "Maritime", "altitude_offset": -2000, "temp_offset": 10, "turbulence": 0.2},
-    "FOREST": {"name": "Forest", "altitude_offset": 0, "temp_offset": 0, "turbulence": 0.1},
-    "HIGH_ALTITUDE": {"name": "High Altitude", "altitude_offset": 8000, "temp_offset": -20, "turbulence": 0.1},
+    "MOUNTAIN": {"name": "Mountain (Himalayas)", "altitude_offset": 3000, "temp_offset": -8, "turbulence": 0.3},
+    "DESERT": {"name": "Desert (Thar)", "altitude_offset": 0, "temp_offset": 25, "turbulence": 0.15},
+    "MARITIME": {"name": "Maritime (Indian Ocean)", "altitude_offset": -2000, "temp_offset": 10, "turbulence": 0.2},
+    "FOREST": {"name": "North-Eastern Terrain", "altitude_offset": 0, "temp_offset": 0, "turbulence": 0.15},
+    "NORTH_EAST": {"name": "North-Eastern Terrain", "altitude_offset": 0, "temp_offset": 0, "turbulence": 0.15},
+    "HIGH_ALTITUDE": {"name": "High Altitude (Ladakh)", "altitude_offset": 8000, "temp_offset": -20, "turbulence": 0.1},
     "ADVERSE_WEATHER": {"name": "Adverse Weather", "altitude_offset": 0, "temp_offset": 5, "turbulence": 0.6},
     "STANDARD": {"name": "Standard", "altitude_offset": 0, "temp_offset": 0, "turbulence": 0.05},
 }
+
+TERRAIN_SECTORS = {
+    "DESERT": {
+        "sector": "Thar Desert (Rajasthan / Pokhran Sector)",
+        "lat": 26.9157,
+        "lon": 70.9083,
+        "altitude_ft": 4500,
+        "waypoints": [
+            {"lat": 26.9157, "lon": 70.9083, "label": "BASE-JAISALMER", "type": "AIRBASE"},
+            {"lat": 27.0238, "lon": 71.7521, "label": "WP1-POKHRAN", "type": "RANGE"},
+            {"lat": 27.7958, "lon": 70.3542, "label": "WP2-TANOT", "type": "BORDER_POST"},
+            {"lat": 27.5218, "lon": 70.1539, "label": "WP3-LONGEWALA", "type": "FORWARD_EDGE"},
+            {"lat": 27.2410, "lon": 70.6120, "label": "WP4-RAMGARH", "type": "RADAR"},
+            {"lat": 26.9157, "lon": 70.9083, "label": "DIVERT-JAISALMER", "type": "EMERGENCY"},
+        ]
+    },
+    "MOUNTAIN": {
+        "sector": "Himalayas (Ladakh / Siachen Sector)",
+        "lat": 34.1526,
+        "lon": 77.5771,
+        "altitude_ft": 18500,
+        "waypoints": [
+            {"lat": 34.1526, "lon": 77.5771, "label": "BASE-LEH", "type": "AIRBASE"},
+            {"lat": 34.8210, "lon": 77.1230, "label": "WP1-SIACHEN", "type": "BASE_CAMP"},
+            {"lat": 35.5120, "lon": 77.8210, "label": "WP2-KARAKORAM", "type": "PASS"},
+            {"lat": 33.7540, "lon": 78.6520, "label": "WP3-PANGONG-LAC", "type": "SURVEILLANCE"},
+            {"lat": 35.2890, "lon": 77.9250, "label": "WP4-DBO", "type": "AIRSTRIP"},
+            {"lat": 34.1526, "lon": 77.5771, "label": "DIVERT-LEH", "type": "EMERGENCY"},
+        ]
+    },
+    "MARITIME": {
+        "sector": "Indian Ocean EEZ (Arabian Sea / Mumbai High)",
+        "lat": 18.9220,
+        "lon": 72.8347,
+        "altitude_ft": 7200,
+        "waypoints": [
+            {"lat": 18.9220, "lon": 72.8347, "label": "BASE-INS-SHIKRA", "type": "AIRBASE"},
+            {"lat": 19.4120, "lon": 71.3540, "label": "WP1-MUMBAI-HIGH", "type": "OFFSHORE_RIG"},
+            {"lat": 18.2540, "lon": 70.8210, "label": "WP2-EEZ-PATROL-A", "type": "PATROL"},
+            {"lat": 17.5120, "lon": 71.9540, "label": "WP3-SEA-LANE", "type": "MARITIME_CORRIDOR"},
+            {"lat": 15.3800, "lon": 73.8310, "label": "DIVERT-INS-HANSA", "type": "EMERGENCY"},
+        ]
+    },
+    "FOREST": {
+        "sector": "North-Eastern Terrain (Arunachal / Tawang Valley)",
+        "lat": 27.5861,
+        "lon": 91.8594,
+        "altitude_ft": 9500,
+        "waypoints": [
+            {"lat": 26.7090, "lon": 92.7840, "label": "BASE-TEZPUR", "type": "AIRBASE"},
+            {"lat": 27.5861, "lon": 91.8594, "label": "WP1-TAWANG-VALLEY", "type": "GORGE_PASS"},
+            {"lat": 27.5020, "lon": 92.1050, "label": "WP2-SELA-RIDGE", "type": "TERRAIN_FEATURE"},
+            {"lat": 27.7120, "lon": 91.9210, "label": "WP3-BUM-LA", "type": "BORDER_POST"},
+            {"lat": 28.1250, "lon": 97.0120, "label": "WP4-WALONG", "type": "VALLEY_CORRIDOR"},
+            {"lat": 26.7090, "lon": 92.7840, "label": "DIVERT-TEZPUR", "type": "EMERGENCY"},
+        ]
+    },
+    "NORTH_EAST": {
+        "sector": "North-Eastern Terrain (Arunachal / Tawang Valley)",
+        "lat": 27.5861,
+        "lon": 91.8594,
+        "altitude_ft": 9500,
+        "waypoints": [
+            {"lat": 26.7090, "lon": 92.7840, "label": "BASE-TEZPUR", "type": "AIRBASE"},
+            {"lat": 27.5861, "lon": 91.8594, "label": "WP1-TAWANG-VALLEY", "type": "GORGE_PASS"},
+            {"lat": 27.5020, "lon": 92.1050, "label": "WP2-SELA-RIDGE", "type": "TERRAIN_FEATURE"},
+            {"lat": 27.7120, "lon": 91.9210, "label": "WP3-BUM-LA", "type": "BORDER_POST"},
+            {"lat": 28.1250, "lon": 97.0120, "label": "WP4-WALONG", "type": "VALLEY_CORRIDOR"},
+            {"lat": 26.7090, "lon": 92.7840, "label": "DIVERT-TEZPUR", "type": "EMERGENCY"},
+        ]
+    }
+}
+
 
 
 @dataclass
@@ -225,6 +299,19 @@ class EngineSimulator:
         profile = MISSION_PROFILES.get(self._state.mission_profile, MISSION_PROFILES["ISR"])
         self._state.altitude_ft = profile.altitude_ft + env["altitude_offset"]
         self._state.ambient_temp_c = profile.ambient_temp_c + env["temp_offset"]
+
+        # Update UAV GPS coordinates and sector waypoints for real-time tracking
+        sec = TERRAIN_SECTORS.get(env_name, TERRAIN_SECTORS.get("MOUNTAIN"))
+        if sec:
+            self._state.uav_lat = sec["lat"]
+            self._state.uav_lon = sec["lon"]
+            self._state.waypoints = [dict(w) for w in sec["waypoints"]]
+            self._state.current_waypoint_idx = 0
+            if len(self._state.waypoints) > 1:
+                wp1 = self._state.waypoints[1]
+                dlat_t = wp1["lat"] - sec["lat"]
+                dlon_t = wp1["lon"] - sec["lon"]
+                self._state.uav_heading_deg = float(np.degrees(np.arctan2(dlon_t, dlat_t)) % 360)
 
     def inject_fault(self, fault_type: str, severity: float) -> None:
         """Inject a fault with given severity 0–1"""
@@ -554,24 +641,21 @@ class EngineSimulator:
                     np.degrees(np.arctan2(dlon_t, dlat_t)) % 360
                 )
 
-    def _generate_waypoints(self, mission_profile: str) -> List[Dict]:
-        """Generate Indian defence mission waypoints (lat/lon) for 3D display"""
-        base_lat = 34.1526  # Ladakh / Himalayan Sector, India
+    def _generate_waypoints(self, mission_profile: str, env_name: Optional[str] = None) -> List[Dict]:
+        """Generate Indian defence mission waypoints (lat/lon) for real-time tracking"""
+        env_key = env_name or getattr(self._state, "environment", "MOUNTAIN")
+        sec = TERRAIN_SECTORS.get(env_key, TERRAIN_SECTORS.get("MOUNTAIN"))
+        if sec and "waypoints" in sec:
+            return [dict(w) for w in sec["waypoints"]]
+        base_lat = 34.1526
         base_lon = 77.5771
-        routes = {
-            "ISR": [
-                {"lat": base_lat + 0.15, "lon": base_lon + 0.10, "label": "WP1-SIACHEN"},
-                {"lat": base_lat + 0.35, "lon": base_lon + 0.20, "label": "WP2-KARAKORAM"},
-                {"lat": base_lat + 0.40, "lon": base_lon + 0.45, "label": "TARGET-LAC"},
-                {"lat": base_lat + 0.20, "lon": base_lon + 0.40, "label": "WP3-PANGONG"},
-                {"lat": base_lat, "lon": base_lon + 0.15, "label": "WP4-LEH"},
-            ],
-            "ENDURANCE": [
-                {"lat": base_lat + 0.3, "lon": base_lon + 0.8, "label": "WP4"},
-            ],
-        }
-        route = routes.get(mission_profile, routes["ISR"])
-        return route
+        return [
+            {"lat": base_lat + 0.15, "lon": base_lon + 0.10, "label": "WP1-SIACHEN", "type": "BASE_CAMP"},
+            {"lat": base_lat + 0.35, "lon": base_lon + 0.20, "label": "WP2-KARAKORAM", "type": "PASS"},
+            {"lat": base_lat + 0.40, "lon": base_lon + 0.45, "label": "TARGET-LAC", "type": "SURVEILLANCE"},
+            {"lat": base_lat + 0.20, "lon": base_lon + 0.40, "label": "WP3-PANGONG", "type": "PATROL"},
+            {"lat": base_lat, "lon": base_lon + 0.15, "label": "WP4-LEH", "type": "AIRBASE"},
+        ]
 
     def get_waypoints(self) -> List[Dict]:
         return self._state.waypoints

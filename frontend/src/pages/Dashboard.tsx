@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useStore } from '../store/useStore';
 import { api } from '../services/api';
 import { TelemetryGrid } from '../components/dashboard/TelemetryGrid';
 import { HealthGauge, RULPanel, MissionRiskPanel } from '../components/dashboard/HealthGauge';
+import { GPSTrackingMap } from '../components/aerospace/GPSTrackingMap';
+import { CyberTelemetryDetector } from '../components/aerospace/CyberTelemetryDetector';
+import { MissionReplanningChat } from '../components/aerospace/MissionReplanningChat';
 import {
   Play,
   Pause,
@@ -13,12 +16,17 @@ import {
   Zap,
   Radio,
   Flame,
+  Activity,
+  Map,
+  MessageSquare,
+  ShieldAlert,
 } from 'lucide-react';
 
 function fmt(v: number | undefined, d = 1) {
   if (v === undefined || v === null || !isFinite(v)) return '---';
   return v.toFixed(d);
 }
+
 
 // ── Fault Panel ────────────────────────────────────────────────────────────
 function FaultPanel() {
@@ -384,46 +392,126 @@ function DegradationPanel() {
 
 // ── Main Dashboard ────────────────────────────────────────────────────────
 export default function Dashboard() {
+  const [activeTab, setActiveTab] = useState<'matrix' | 'gps' | 'cyber' | 'chat'>('matrix');
+
   return (
     <div className="dashboard-page w-full h-full flex flex-col overflow-y-auto pb-4">
-      {/* Top Mission Control Bar */}
+      {/* ── Top Dashboard Workspace Switcher ── */}
+      <div className="mx-5 my-2.5 p-1.5 rounded-2xl bg-[#06101c]/80 backdrop-blur-xl border border-[#1a2f4a]/80 shadow-lg flex items-center justify-between gap-3 flex-wrap z-20">
+        <div className="flex items-center gap-1.5 overflow-x-auto">
+          <button
+            onClick={() => setActiveTab('matrix')}
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === 'matrix'
+                ? 'bg-sky-500/20 text-white border border-sky-400/50 shadow-[0_0_12px_rgba(56,189,248,0.25)]'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-white/5 border border-transparent'
+            }`}
+          >
+            <Activity className="w-3.5 h-3.5" />
+            <span>LIVE TELEMETRY MATRIX</span>
+          </button>
 
+          <button
+            onClick={() => setActiveTab('gps')}
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === 'gps'
+                ? 'bg-sky-500/20 text-white border border-sky-400/50 shadow-[0_0_12px_rgba(56,189,248,0.25)]'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-white/5 border border-transparent'
+            }`}
+          >
+            <Map className="w-3.5 h-3.5" />
+            <span>GPS TRACKING MAP (4 TERRAINS)</span>
+          </button>
 
-      <div className="dashboard-grid px-5 pb-3 pt-2 grid grid-cols-1 lg:grid-cols-12 gap-4">
-        {/* Left Column: Health Gauge + Degradation Panel (3 Cols) */}
-        <div className="lg:col-span-3 flex flex-col gap-4 min-h-0 overflow-hidden">
-          <div className="flex-shrink-0">
-            <HealthGauge />
-          </div>
-          <div className="flex-1 min-h-0">
-            <DegradationPanel />
-          </div>
+          <button
+            onClick={() => setActiveTab('cyber')}
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === 'cyber'
+                ? 'bg-sky-500/20 text-white border border-sky-400/50 shadow-[0_0_12px_rgba(56,189,248,0.25)]'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-white/5 border border-transparent'
+            }`}
+          >
+            <ShieldAlert className="w-3.5 h-3.5" />
+            <span>CYBER-TELEMETRY ANOMALY DETECTION</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('chat')}
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === 'chat'
+                ? 'bg-sky-500/20 text-white border border-sky-400/50 shadow-[0_0_12px_rgba(56,189,248,0.25)]'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-white/5 border border-transparent'
+            }`}
+          >
+            <MessageSquare className="w-3.5 h-3.5" />
+            <span>MISSION REPLANNING COPILOT (CHAT)</span>
+          </button>
         </div>
 
-        {/* Center Column: Telemetry Matrix + Fault Classifier & Integrity (6 Cols) */}
-        <div className="lg:col-span-6 flex flex-col gap-4 min-h-0 overflow-hidden">
-          <div className="flex-1 min-h-0">
-            <TelemetryGrid />
-          </div>
-          <div className="h-48 grid grid-cols-1 sm:grid-cols-2 gap-4 flex-shrink-0">
-            <FaultPanel />
-            <IntegrityPanel />
-          </div>
-        </div>
-
-        {/* Right Column: RUL Prediction + Pareto Risk + Advisories (3 Cols) */}
-        <div className="lg:col-span-3 flex flex-col gap-4 min-h-0 overflow-hidden">
-          <div className="flex-shrink-0">
-            <RULPanel />
-          </div>
-          <div className="flex-shrink-0">
-            <MissionRiskPanel />
-          </div>
-          <div className="flex-1 min-h-0">
-            <AlertPanel />
-          </div>
+        <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-slate-400 pr-2">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span>AUTONOMOUS ENGINE TWIN • ONLINE</span>
         </div>
       </div>
+
+      {activeTab === 'gps' && (
+        <div className="px-5 pb-3 flex-1 min-h-[600px] flex flex-col">
+          <div className="h-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-slate-950/80 min-h-[580px] flex flex-col">
+            <GPSTrackingMap />
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'cyber' && (
+        <div className="px-5 pb-3 flex-1 min-h-[600px]">
+          <CyberTelemetryDetector />
+        </div>
+      )}
+
+      {activeTab === 'chat' && (
+        <div className="px-5 pb-3 flex-1 min-h-[600px]">
+          <MissionReplanningChat />
+        </div>
+      )}
+
+      {activeTab === 'matrix' && (
+        <div className="dashboard-grid px-5 pb-3 pt-1 grid grid-cols-1 lg:grid-cols-12 gap-4">
+          {/* Left Column: Health Gauge + Degradation Panel (3 Cols) */}
+          <div className="lg:col-span-3 flex flex-col gap-4 min-h-0 overflow-hidden">
+            <div className="flex-shrink-0">
+              <HealthGauge />
+            </div>
+            <div className="flex-1 min-h-0">
+              <DegradationPanel />
+            </div>
+          </div>
+
+          {/* Center Column: Telemetry Matrix + Fault Classifier & Integrity (6 Cols) */}
+          <div className="lg:col-span-6 flex flex-col gap-4 min-h-0 overflow-hidden">
+            <div className="flex-1 min-h-0">
+              <TelemetryGrid />
+            </div>
+            <div className="h-48 grid grid-cols-1 sm:grid-cols-2 gap-4 flex-shrink-0">
+              <FaultPanel />
+              <IntegrityPanel />
+            </div>
+          </div>
+
+          {/* Right Column: RUL Prediction + Pareto Risk + Advisories (3 Cols) */}
+          <div className="lg:col-span-3 flex flex-col gap-4 min-h-0 overflow-hidden">
+            <div className="flex-shrink-0">
+              <RULPanel />
+            </div>
+            <div className="flex-shrink-0">
+              <MissionRiskPanel />
+            </div>
+            <div className="flex-1 min-h-0">
+              <AlertPanel />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+

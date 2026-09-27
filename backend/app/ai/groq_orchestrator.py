@@ -144,26 +144,46 @@ class GroqMultiAgentOrchestrator:
             "max_tokens": 800,
         }
 
+        candidate_models = [model_id]
+        for fallback in ["qwen/qwen3.8-27b", "openai/gpt-oss-120b", "openai/gpt-oss-20b"]:
+            if fallback not in candidate_models:
+                candidate_models.append(fallback)
+
         try:
-            async with httpx.AsyncClient(timeout=15.0) as client:
-                res = await client.post(self.groq_endpoint, headers=headers, json=payload)
-                if res.status_code == 200:
-                    data = res.json()
-                    answer = data["choices"][0]["message"]["content"]
-                    return {
-                        "status": "success",
-                        "response": answer,
-                        "model": model_id,
-                        "agent_role": agent_role,
-                        "online": True,
+            async with httpx.AsyncClient(timeout=20.0) as client:
+                last_error_code = 500
+                for candidate in candidate_models:
+                    payload = {
+                        "model": candidate,
+                        "messages": messages,
+                        "temperature": 0.3,
+                        "max_tokens": 800,
                     }
-                else:
-                    logger.warning("Groq API returned HTTP %s", res.status_code)
-                    return {
-                        "status": "api_error",
-                        "response": f"Groq request failed (HTTP {res.status_code}). Check your key, model access and quota.",
-                        "online": False,
-                    }
+                    res = await client.post(self.groq_endpoint, headers=headers, json=payload)
+                    if res.status_code == 200:
+                        data = res.json()
+                        answer = data["choices"][0]["message"]["content"]
+                        return {
+                            "status": "success",
+                            "response": answer,
+                            "model": candidate,
+                            "agent_role": agent_role,
+                            "online": True,
+                        }
+                    elif res.status_code == 404:
+                        logger.warning(f"Groq model {candidate} not found (404), trying next candidate...")
+                        last_error_code = 404
+                        continue
+                    else:
+                        last_error_code = res.status_code
+                        break
+
+                logger.warning("Groq API returned HTTP %s for all attempted models", last_error_code)
+                return {
+                    "status": "api_error",
+                    "response": f"Groq request failed (HTTP {last_error_code}). Check your key, model access and quota.",
+                    "online": False,
+                }
         except Exception as e:
             logger.error(f"Groq API request failed: {e}")
             return {

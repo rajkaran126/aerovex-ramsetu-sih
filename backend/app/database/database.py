@@ -1,4 +1,5 @@
 """AERO-TWIN — Database Setup"""
+from typing import Generator
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 from .models import Base
@@ -7,9 +8,14 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# Apply SQLite-specific thread safety and timeout settings only when using SQLite
+is_sqlite = settings.DATABASE_URL.startswith("sqlite")
+connect_args = {"check_same_thread": False, "timeout": 30} if is_sqlite else {}
+
 engine = create_engine(
     settings.DATABASE_URL,
-    connect_args={"check_same_thread": False},  # SQLite
+    connect_args=connect_args,
+    pool_pre_ping=True,
     echo=False,
 )
 
@@ -22,7 +28,7 @@ def create_tables() -> None:
     logger.info("Database tables created")
 
 
-def get_db() -> Session:
+def get_db() -> Generator[Session, None, None]:
     """FastAPI dependency for database sessions"""
     db = SessionLocal()
     try:

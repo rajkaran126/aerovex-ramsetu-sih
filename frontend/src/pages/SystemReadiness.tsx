@@ -375,44 +375,7 @@ export default function SystemReadiness() {
             />
           </div>
 
-          {/* Groq Key Banner */}
-          <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 space-y-2.5">
-            <div className="flex items-center justify-between text-xs font-mono">
-              <span className="text-slate-300 flex items-center gap-2 font-bold">
-                <Key className="w-3.5 h-3.5 text-cyan-400" />
-                CENTRALIZED GROQ API KEY CONFIGURATION
-              </span>
-              <span className={isGroqOnline ? 'text-emerald-400 font-bold' : 'text-amber-400'}>
-                {readiness?.groq?.mode || 'LOCAL_ONLY'}
-              </span>
-            </div>
 
-            <div className="flex gap-3">
-              <input
-                type="password"
-                placeholder={isGroqOnline ? '•••••••••••••••••••••••••••• (API Key Active)' : 'Paste your gsk_... key to unlock full multi-agent LLM reasoning'}
-                value={groqKeyInput}
-                onChange={(e) => setGroqKeyInput(e.target.value)}
-                className="flex-1 px-4 py-2.5 rounded-xl bg-black/40 border border-white/15 text-xs font-mono text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20"
-              />
-              <button
-                onClick={handleSaveGroqKey}
-                className="glass-button px-5 py-2.5 rounded-xl text-xs font-black tracking-wider text-slate-950 bg-cyan-400 hover:bg-cyan-300 transition-all shadow-[0_0_15px_rgba(14,165,233,0.4)]"
-              >
-                APPLY KEY
-              </button>
-            </div>
-
-            {groqStatusMsg && (
-              <div
-                className={`text-xs font-mono ${
-                  groqStatusMsg.type === 'success' ? 'text-emerald-400' : 'text-rose-400'
-                }`}
-              >
-                {groqStatusMsg.text}
-              </div>
-            )}
-          </div>
 
           {/* Interactive Agent Chat Stream */}
           <div className="flex-1 flex flex-col rounded-2xl bg-black/40 border border-white/10 overflow-hidden min-h-0">
@@ -428,10 +391,10 @@ export default function SystemReadiness() {
                       : 'text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'
                   }`}
                 >
-                  {agent === 'orchestrator' ? '👑 Chief Orchestrator' :
-                   agent === 'engine' ? '⚙ Propulsion' :
-                   agent === 'security' ? '🛡 Cyber Security' :
-                   agent === 'mission' ? '🎯 Mission Risk' : '🔧 Maintenance'}
+                  {agent === 'orchestrator' ? 'Chief Orchestrator' :
+                   agent === 'engine' ? 'Propulsion' :
+                   agent === 'security' ? 'Cyber Security' :
+                   agent === 'mission' ? 'Mission Risk' : 'Maintenance'}
                 </button>
               ))}
             </div>

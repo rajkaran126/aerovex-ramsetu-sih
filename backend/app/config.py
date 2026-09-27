@@ -37,11 +37,11 @@ class Settings(BaseSettings):
 
     # Groq LLM Configuration
     GROQ_API_KEY: Optional[str] = None
-    ENGINE_AGENT_MODEL: str = "llama-3.3-70b-versatile"
-    SECURITY_AGENT_MODEL: str = "llama-3.3-70b-versatile"
-    MISSION_AGENT_MODEL: str = "llama-3.3-70b-versatile"
-    MAINTENANCE_AGENT_MODEL: str = "llama-3.3-70b-versatile"
-    ORCHESTRATOR_MODEL: str = "llama-3.3-70b-versatile"
+    ENGINE_AGENT_MODEL: str = "qwen/qwen3.8-27b"
+    SECURITY_AGENT_MODEL: str = "qwen/qwen3.8-27b"
+    MISSION_AGENT_MODEL: str = "openai/gpt-oss-120b"
+    MAINTENANCE_AGENT_MODEL: str = "qwen/qwen3.8-27b"
+    ORCHESTRATOR_MODEL: str = "qwen/qwen3.8-27b"
 
     # Dataset directory paths
     DATA_DIR: str = "../data"

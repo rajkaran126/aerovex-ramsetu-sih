@@ -37,11 +37,12 @@ export function GPSTacticalHUD() {
           grid: '43Q DA 48921 78912',
         };
       case 'FOREST':
+      case 'NORTH_EAST':
         return {
-          theatre: 'WESTERN GHATS SECTOR',
-          region: 'Nilgiri / Southern Command, India',
-          base: 'Sulur Tactical Airbase',
-          grid: '43P FM 61284 19042',
+          theatre: 'NORTH-EASTERN TERRAIN',
+          region: 'Arunachal Pradesh / Tawang Valley, India',
+          base: 'Tezpur Forward Airbase',
+          grid: '43R WM 82140 91042',
         };
       case 'MOUNTAIN':
       case 'HIGH_ALTITUDE':
@@ -60,12 +61,12 @@ export function GPSTacticalHUD() {
 
   return (
     <div className="gps-hud z-20 pointer-events-none">
-      <div className="flex items-center gap-3 px-3.5 py-1.5 rounded-2xl bg-slate-950/85 border border-cyan-500/40 backdrop-blur-xl shadow-[0_4px_24px_rgba(0,0,0,0.6)] font-mono text-white text-xs">
+      <div className="flex items-center gap-3 px-3.5 py-1.5 rounded-2xl bg-slate-950/85 border border-cyan-500/30 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.6)] font-mono text-slate-200 text-xs">
         {/* NavIC Satellite Lock Indicator */}
-        <div className="flex items-center gap-1.5 pr-2.5 border-r border-white/15">
+        <div className="flex items-center gap-1.5 pr-2.5 border-r border-white/10">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
           </span>
           <Satellite className="w-3.5 h-3.5 text-cyan-400" />
           <div className="text-left">
@@ -75,7 +76,7 @@ export function GPSTacticalHUD() {
         </div>
 
         {/* Indian Location Sector */}
-        <div className="flex items-center gap-2 pr-2.5 border-r border-white/15">
+        <div className="flex items-center gap-2 pr-2.5 border-r border-white/10">
           <MapPin className="w-3.5 h-3.5 text-amber-400" />
           <div className="text-left">
             <div className="text-[9px] font-bold text-white tracking-wide">{indianSector.theatre}</div>
@@ -84,7 +85,7 @@ export function GPSTacticalHUD() {
         </div>
 
         {/* Live GPS Coordinates */}
-        <div className="flex items-center gap-3 pr-2.5 border-r border-white/15">
+        <div className="flex items-center gap-3 pr-2.5 border-r border-white/10">
           <div>
             <div className="text-[8px] text-slate-400">LATITUDE</div>
             <div className="text-[10px] font-bold text-cyan-300">{latDMS}</div>
@@ -99,11 +100,11 @@ export function GPSTacticalHUD() {
         <div className="flex items-center gap-3">
           <div>
             <div className="text-[8px] text-slate-400">ALT MSL</div>
-            <div className="text-[10px] font-bold text-white">{Math.round(uav.altitude_ft || 18500).toLocaleString()} FT</div>
+            <div className="text-[10px] font-bold text-sky-400">{Math.round(uav.altitude_ft || 18500).toLocaleString()} FT</div>
           </div>
           <div>
             <div className="text-[8px] text-slate-400">HEADING</div>
-            <div className="text-[10px] font-bold text-amber-300">{Math.round(uav.heading_deg || 55).toString().padStart(3, '0')}°</div>
+            <div className="text-[10px] font-bold text-amber-400">{Math.round(uav.heading_deg || 55).toString().padStart(3, '0')}°</div>
           </div>
         </div>
       </div>

@@ -3,9 +3,8 @@ from sqlalchemy import (
     Column, Integer, Float, String, Boolean, DateTime, Text, JSON,
     ForeignKey, create_engine
 )
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
-from datetime import datetime
+from sqlalchemy.orm import relationship, declarative_base
+from datetime import datetime, timezone
 
 Base = declarative_base()
 

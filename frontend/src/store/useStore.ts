@@ -226,6 +226,8 @@ export interface SystemState {
     yaw: number;      // -1 (rudder left) to +1 (rudder right)
     throttle: number; // 0 (idle) to 1 (full military thrust)
   };
+  // Theme
+  themeMode: 'dark' | 'light';
 }
 
 const defaultState: SystemState = {
@@ -306,6 +308,7 @@ const defaultState: SystemState = {
     { id: 'uav-03', callsign: 'BETA-03', role: 'WINGMAN_STBD', battery_pct: 86, rssi_dbm: -53, latency_ms: 13.5, pdr_pct: 98.7, health_pct: 97, status: 'OPTIMAL' },
     { id: 'uav-04', callsign: 'RELAY-04', role: 'RELAY', battery_pct: 79, rssi_dbm: -58, latency_ms: 17.2, pdr_pct: 97.5, health_pct: 94, status: 'OPTIMAL' },
   ],
+  themeMode: 'dark',
 };
 
 interface Actions {

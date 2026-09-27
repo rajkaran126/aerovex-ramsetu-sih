@@ -91,9 +91,13 @@ class TelemetryIntegrityResult:
     telemetry_integrity_score: float = 1.0   # 0–1
     cyber_anomaly_score: float = 0.0          # 0–1
     overall_classification: str = "NORMAL TELEMETRY"
+    telemetry_verdict: str = "NORMAL TELEMETRY"
+    is_cyber_anomaly: bool = False
+    is_physical_fault: bool = False
     sensor_statuses: Dict[str, SensorStatus] = field(default_factory=dict)
     affected_sensors: List[str] = field(default_factory=list)
     anomaly_reasons: List[str] = field(default_factory=list)
+    physics_cross_checks: Dict[str, Dict] = field(default_factory=dict)
 
     def to_dict(self) -> Dict:
         statuses = {}
@@ -113,9 +117,13 @@ class TelemetryIntegrityResult:
             "telemetry_integrity_score": round(self.telemetry_integrity_score, 3),
             "cyber_anomaly_score": round(self.cyber_anomaly_score, 3),
             "overall_classification": self.overall_classification,
+            "telemetry_verdict": self.telemetry_verdict,
+            "is_cyber_anomaly": self.is_cyber_anomaly,
+            "is_physical_fault": self.is_physical_fault,
             "sensor_statuses": statuses,
             "affected_sensors": self.affected_sensors,
             "anomaly_reasons": self.anomaly_reasons,
+            "physics_cross_checks": self.physics_cross_checks,
         }
 
 
@@ -266,6 +274,39 @@ class TelemetryIntegrityMonitor:
         result.affected_sensors = list(set(low_confidence_sensors))
         result.anomaly_reasons = list(set(issues))
 
+        # ── Physics-based Cross-Validation Checks ─────────────────────────────
+        egt_res = abs(residual.get("egt_c", 0.0))
+        cht_res = abs(residual.get("cht_c", 0.0))
+        oil_p_res = abs(residual.get("oil_pressure_bar", 0.0))
+        oil_t_res = abs(residual.get("oil_temp_c", 0.0))
+        ff_res = abs(residual.get("fuel_flow_lph", 0.0))
+        rpm_res = abs(residual.get("rpm", 0.0))
+
+        # Check 1: EGT vs CHT Thermal Mass Coupling
+        egt_cht_valid = not (egt_res > 90.0 and cht_res < 15.0)
+        # Check 2: Oil Viscosity & Hydrodynamic Film Balance
+        oil_coupling_valid = not (oil_p_res > 1.8 and oil_t_res < 5.0)
+        # Check 3: Fuel Flow vs RPM Conservation of Energy
+        fuel_rpm_valid = not (ff_res > 8.0 and rpm_res < 80.0)
+
+        result.physics_cross_checks = {
+            "thermal_coupling": {
+                "name": "EGT ↔ CHT Thermal Inertia Coupling",
+                "valid": bool(egt_cht_valid),
+                "detail": "Consistent" if egt_cht_valid else f"EGT residual {egt_res:.1f}°C isolated without CHT rise ({cht_res:.1f}°C)",
+            },
+            "lubrication_dynamics": {
+                "name": "Oil Pressure ↔ Temperature Viscosity",
+                "valid": bool(oil_coupling_valid),
+                "detail": "Consistent" if oil_coupling_valid else "Pressure drop without thermal signature",
+            },
+            "mass_energy_balance": {
+                "name": "Fuel Flow ↔ RPM Thermodynamic Law",
+                "valid": bool(fuel_rpm_valid),
+                "detail": "Consistent" if fuel_rpm_valid else "Fuel flow deviation violates mechanical power balance",
+            },
+        }
+
         # ── Compute aggregate scores ─────────────────────────────────────────
         confidences = [s.confidence for s in result.sensor_statuses.values()]
         result.telemetry_integrity_score = float(np.mean(confidences))
@@ -273,23 +314,35 @@ class TelemetryIntegrityMonitor:
         n_issues = len(result.affected_sensors)
         result.cyber_anomaly_score = float(np.clip(n_issues / len(SENSOR_KEYS), 0.0, 1.0))
 
-        # ── Overall classification ───────────────────────────────────────────
-        if n_issues == 0:
+        # Multi-sensor coupled physical fault signature
+        is_coupled_physical = (egt_res > 40.0 and cht_res > 12.0) or (oil_p_res > 0.8 and oil_t_res > 8.0)
+        is_isolated_violation = not egt_cht_valid or not oil_coupling_valid or not fuel_rpm_valid or any("SPIKE" in r or "FROZEN" in r for r in result.anomaly_reasons)
+
+        result.is_physical_fault = bool(is_coupled_physical and not is_isolated_violation)
+        result.is_cyber_anomaly = bool(is_isolated_violation or (n_issues > 0 and not is_coupled_physical))
+
+        # ── Overall classification & Verdict ──────────────────────────────────
+        if n_issues == 0 and not is_isolated_violation:
             result.overall_classification = "NORMAL TELEMETRY"
+            result.telemetry_verdict = "NORMAL TELEMETRY (AUTHENTIC)"
+        elif result.is_physical_fault:
+            result.overall_classification = "PHYSICAL ENGINE DEGRADATION"
+            result.telemetry_verdict = "AUTHENTIC ENGINE HARDWARE FAULT"
         elif any("DROPOUT" in r for r in result.anomaly_reasons):
             result.overall_classification = "SENSOR FAILURE"
+            result.telemetry_verdict = "SENSOR HARDWARE FAILURE (DROPOUT)"
         elif any("FROZEN" in r for r in result.anomaly_reasons):
-            result.overall_classification = "SENSOR FAILURE"
-        elif any("INCONSISTENCY" in r for r in result.anomaly_reasons):
             result.overall_classification = "SUSPICIOUS TELEMETRY"
-        elif any("SPIKE" in r for r in result.anomaly_reasons):
-            result.overall_classification = "DATA ANOMALY"
-        elif any("DRIFT" in r for r in result.anomaly_reasons):
-            result.overall_classification = "SENSOR DRIFT"
+            result.telemetry_verdict = "CYBER ANOMALY (FROZEN ADC / TELEMETRY TAMPERING)"
+        elif result.is_cyber_anomaly:
+            result.overall_classification = "SUSPICIOUS TELEMETRY"
+            result.telemetry_verdict = "CYBER ANOMALY (MANIPULATED / SPOOFED TELEMETRY)"
         else:
             result.overall_classification = "DATA ANOMALY"
+            result.telemetry_verdict = "DATA ANOMALY"
 
         return result
+
 
     def get_corrected_telemetry(
         self,
