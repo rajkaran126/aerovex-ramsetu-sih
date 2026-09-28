@@ -135,12 +135,14 @@ export function GPSTrackingMap({ className = '' }: { className?: string }) {
   const uavMarkerRef = useRef<L.Marker | null>(null);
   const polylineRef = useRef<L.Polyline | null>(null);
   const ghostPolylineRef = useRef<L.Polyline | null>(null);
+  const ghostMarkerRef = useRef<L.Marker | null>(null);
   const waypointsLayerRef = useRef<L.LayerGroup | null>(null);
   const patrolRouteLayerRef = useRef<L.Polyline | null>(null);
 
   const uav = useStore(s => s.uav);
   const mission = useStore(s => s.mission);
   const replanning = useStore(s => s.replanning);
+  const showGhostUAV = useStore(s => s.showGhostUAV);
   const isRunning = useStore(s => s.isRunning);
   const themeMode = useStore(s => s.themeMode);
   const isLight = themeMode === 'light';
@@ -271,8 +273,32 @@ export function GPSTrackingMap({ className = '' }: { className?: string }) {
 
     const marker = L.marker(initialCenter, { icon: uavIcon }).addTo(map);
 
+    // Tactical Holographic Ghost UAV Icon (Purple/Cyan Pulsing)
+    const ghostIcon = L.divIcon({
+      className: 'ghost-uav-gps-icon',
+      html: `
+        <div style="transform: rotate(${uav.heading_deg || 0}deg); display: flex; flex-direction: column; align-items: center; justify-content: center;">
+          <div style="position: relative; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;">
+            <div style="position: absolute; inset: 0; background: rgba(192, 132, 252, 0.35); border: 2px dashed #c084fc; border-radius: 50%; animation: spin 6s linear infinite;"></div>
+            <div style="width: 24px; height: 24px; background: #7e22ce; border: 2px solid #e9d5ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 14px rgba(168,85,247,0.8);">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>
+              </svg>
+            </div>
+          </div>
+          <div style="background: rgba(15, 23, 42, 0.9); border: 1px solid #a855f7; border-radius: 4px; padding: 1px 4px; font-family: monospace; font-size: 8px; color: #d8b4fe; font-weight: bold; margin-top: 2px; white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,0.6);">
+            GHOST
+          </div>
+        </div>
+      `,
+      iconSize: [48, 48],
+      iconAnchor: [24, 17],
+    });
+    const ghostMarker = L.marker(initialCenter, { icon: ghostIcon, opacity: 0 }).addTo(map);
+
     mapInstanceRef.current = map;
     uavMarkerRef.current = marker;
+    ghostMarkerRef.current = ghostMarker;
     polylineRef.current = polyline;
     ghostPolylineRef.current = ghostPolyline;
     waypointsLayerRef.current = waypointsLayer;
@@ -432,28 +458,56 @@ export function GPSTrackingMap({ className = '' }: { className?: string }) {
     return () => clearInterval(interval);
   }, [isPatrolActive, isRunning, activeWaypoints, targetWpIdx, activeTerrain]);
 
-  // Update Dynamic Replanning Ghost Route overlay
+  // Update Dynamic Replanning Ghost Route overlay & Tactical Marker
   useEffect(() => {
     if (!ghostPolylineRef.current) return;
 
-    if (replanning?.triggered && replanning.best_candidate) {
-      const diversionWp = [
-        [uav.lat || activeTerrain.lat, uav.lon || activeTerrain.lon],
-        [
-          (uav.lat || activeTerrain.lat) + 0.08,
-          (uav.lon || activeTerrain.lon) - 0.06,
-        ],
-        [
-          (uav.lat || activeTerrain.lat) + 0.14,
-          (uav.lon || activeTerrain.lon) - 0.12,
-        ],
-      ] as L.LatLngExpression[];
+    if (showGhostUAV) {
+      const currLat = uav.lat || activeTerrain.lat;
+      const currLon = uav.lon || activeTerrain.lon;
 
-      ghostPolylineRef.current.setLatLngs(diversionWp);
+      if (replanning?.triggered && replanning.best_candidate) {
+        // Contingency Diversion Route towards recovery base / safe loiter
+        const diversionWp = [
+          [currLat, currLon],
+          [currLat + 0.075, currLon - 0.055],
+          [currLat + 0.15, currLon - 0.12],
+        ] as L.LatLngExpression[];
+
+        ghostPolylineRef.current.setStyle({ color: '#c084fc', dashArray: '6, 8', weight: 3.5 });
+        ghostPolylineRef.current.setLatLngs(diversionWp);
+
+        if (ghostMarkerRef.current) {
+          ghostMarkerRef.current.setLatLng([currLat + 0.075, currLon - 0.055]);
+          ghostMarkerRef.current.setOpacity(1.0);
+        }
+      } else {
+        // Predictive Horizon Shadow Twin (+25s forward vector)
+        const hdgRad = ((uav.heading_deg || 55) * Math.PI) / 180;
+        const shadowLat = currLat + Math.cos(hdgRad) * 0.038;
+        const shadowLon = currLon + Math.sin(hdgRad) * 0.038;
+
+        const shadowWp = [
+          [currLat, currLon],
+          [shadowLat, shadowLon],
+          [currLat + Math.cos(hdgRad) * 0.075, currLon + Math.sin(hdgRad) * 0.075],
+        ] as L.LatLngExpression[];
+
+        ghostPolylineRef.current.setStyle({ color: '#38bdf8', dashArray: '4, 6', weight: 3 });
+        ghostPolylineRef.current.setLatLngs(shadowWp);
+
+        if (ghostMarkerRef.current) {
+          ghostMarkerRef.current.setLatLng([shadowLat, shadowLon]);
+          ghostMarkerRef.current.setOpacity(0.9);
+        }
+      }
     } else {
       ghostPolylineRef.current.setLatLngs([]);
+      if (ghostMarkerRef.current) {
+        ghostMarkerRef.current.setOpacity(0);
+      }
     }
-  }, [replanning, uav.lat, uav.lon, activeTerrain]);
+  }, [showGhostUAV, replanning, uav.lat, uav.lon, uav.heading_deg, activeTerrain]);
 
   const handleSelectTerrain = async (terrain: TerrainConfig) => {
     setActiveTerrainKey(terrain.key);

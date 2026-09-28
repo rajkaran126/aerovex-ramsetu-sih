@@ -280,7 +280,7 @@ async def run_replanning():
     risk = state.get("mission_risk", {})
 
     result = orchestrator._replanner.evaluate(
-        current_risk=risk.get("risk_level", "MEDIUM"),
+        current_risk=risk.get("risk_level", "LOW"),
         health=health,
         degradation=state.get("degradation", {}),
         rul_median=rul.get("rul_median", 99.0),
@@ -292,6 +292,7 @@ async def run_replanning():
         fault_probabilities=state.get("faults", {}).get("probabilities", {}),
         uav_lat=sim_state.uav_lat,
         uav_lon=sim_state.uav_lon,
+        force=True,
     )
     orchestrator._replanning_result = result.to_dict()
     return result.to_dict()

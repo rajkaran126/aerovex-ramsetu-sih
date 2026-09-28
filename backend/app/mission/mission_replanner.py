@@ -118,6 +118,7 @@ class MissionReplanner:
         base_lon: float = 77.2090,
         uav_lat: float = 28.8,
         uav_lon: float = 77.4,
+        force: bool = False,
     ) -> ReplanningResult:
         """
         Generate and evaluate alternative mission profiles.
@@ -125,13 +126,17 @@ class MissionReplanner:
         result = ReplanningResult()
         result.current_risk = current_risk
 
-        if current_risk == "LOW":
+        if not force and current_risk == "LOW":
             result.triggered = False
             result.recommendation = "CONTINUE"
             return result
 
         result.triggered = True
-        result.reason = f"Mission risk is {current_risk} — evaluating alternatives"
+        result.reason = (
+            f"Mission risk is {current_risk} — evaluating alternatives"
+            if current_risk != "LOW"
+            else "Tactical replanning simulation requested by operator"
+        )
 
         deg = DegradationState(**{
             k: float(v) for k, v in degradation.items()

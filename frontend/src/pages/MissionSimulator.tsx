@@ -178,7 +178,20 @@ function ViewSelector() {
             <span>⧉ SPLIT</span>
           </button>
           <button
-            onClick={() => setShowGhostUAV(!showGhostUAV)}
+            onClick={async () => {
+              const next = !showGhostUAV;
+              setShowGhostUAV(next);
+              if (next && !useStore.getState().replanning?.triggered) {
+                try {
+                  const rep = await api.runReplanning();
+                  if (rep) {
+                    useStore.getState().updateFromBackend({ replanning: rep });
+                  }
+                } catch (e) {
+                  console.warn('Ghost replanning note:', e);
+                }
+              }
+            }}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-mono tracking-wider transition-all ${
               showGhostUAV
                 ? 'bg-purple-500/20 text-purple-300 border border-purple-400/50 shadow-[0_0_12px_rgba(168,85,247,0.3)] font-bold'
@@ -234,11 +247,13 @@ function ViewSelector() {
 
 // ── Cockpit HUD Overlay ───────────────────────────────────────────────────
 function CockpitHUD() {
-  const { telemetry, health, mission, uav } = useStore(s => ({
+  const { telemetry, health, mission, uav, showGhostUAV, replanning } = useStore(s => ({
     telemetry: s.telemetry,
     health: s.health,
     mission: s.mission,
     uav: s.uav,
+    showGhostUAV: s.showGhostUAV,
+    replanning: s.replanning,
   }));
   const a = telemetry.actual;
 
@@ -264,6 +279,34 @@ function CockpitHUD() {
           </div>
         ))}
       </div>
+
+      {/* Ghost UAV Simulation Tactical Banner */}
+      {showGhostUAV && (
+        <div className="absolute top-28 left-1/2 -translate-x-1/2 flex items-center gap-3 px-4 py-1.5 rounded-xl bg-slate-950/85 backdrop-blur-md border border-purple-500/50 shadow-[0_0_20px_rgba(168,85,247,0.35)] text-purple-200 font-mono text-[11px] pointer-events-auto">
+          <span className="w-2.5 h-2.5 rounded-full bg-purple-400 animate-ping" />
+          <span className="font-bold tracking-wider text-purple-300">GHOST UAV ACTIVE:</span>
+          <span className="text-slate-300">
+            {replanning?.triggered
+              ? `CONTINGENCY DIVERSION // [${replanning.best_candidate?.name || 'RTB'} - ALT 7,000 FT]`
+              : 'DIGITAL TWIN SHADOW // PREDICTIVE HORIZON (+25s)'}
+          </span>
+          <button
+            onClick={async () => {
+              try {
+                const rep = await api.runReplanning();
+                if (rep) {
+                  useStore.getState().updateFromBackend({ replanning: { ...rep, triggered: true } });
+                }
+              } catch (e) {
+                console.warn('Contingency replan error:', e);
+              }
+            }}
+            className="ml-2 px-2.5 py-0.5 rounded-lg bg-purple-500/30 hover:bg-purple-500/60 border border-purple-400/60 text-[10px] text-purple-200 font-bold transition-all shadow-[0_0_10px_rgba(168,85,247,0.4)] cursor-pointer"
+          >
+            TRIGGER CONTINGENCY DIVERSION
+          </button>
+        </div>
+      )}
 
       {/* Left HUD — Engine */}
       <div className="absolute left-4 top-1/2 -translate-y-1/2 p-4 rounded-2xl glass-panel border border-cyan-400/20 font-mono space-y-2">

@@ -595,28 +595,35 @@ function MQ9ReaperModel({
     }
   });
 
-  const bodyColor = ghost ? '#2b7a99' : '#4d5762';
-  const darkDetailColor = ghost ? '#1b4a5c' : '#252a30';
-  const opticColor = '#0e1216';
-  const opacity = ghost ? 0.45 : 1.0;
+  const bodyColor = ghost ? '#00e5ff' : '#4d5762';
+  const darkDetailColor = ghost ? '#0284c7' : '#252a30';
+  const opticColor = ghost ? '#38bdf8' : '#0e1216';
+  const opacity = ghost ? 0.65 : 1.0;
+  const ghostEmissive = ghost ? '#007799' : undefined;
+  const ghostEmissiveInt = ghost ? 0.55 : 0;
 
-  const statusColor =
-    health > 80 ? '#00ff88' :
-    health > 60 ? '#ffcc00' :
-    health > 40 ? '#ff8800' : '#ff3355';
+  const statusColor = ghost
+    ? '#00ffff'
+    : health > 80
+    ? '#00ff88'
+    : health > 60
+    ? '#ffcc00'
+    : health > 40
+    ? '#ff8800'
+    : '#ff3355';
 
   return (
     <group ref={groupRef} position={position} rotation={[0, (heading * Math.PI) / 180, 0]}>
       {/* Fuselage */}
       <mesh position={[0, 0, 0]} rotation={[Math.PI / 2, 0, 0]} castShadow receiveShadow>
         <cylinderGeometry args={[0.22, 0.44, 6.4, 24]} />
-        <meshStandardMaterial color={bodyColor} roughness={0.42} metalness={0.18} transparent={ghost} opacity={opacity} />
+        <meshStandardMaterial color={bodyColor} roughness={0.35} metalness={0.2} transparent={ghost} opacity={opacity} emissive={ghostEmissive} emissiveIntensity={ghostEmissiveInt} />
       </mesh>
 
       {/* Bulbous SATCOM Nose */}
       <mesh position={[0, 0.18, 2.4]} scale={[0.92, 1.10, 1.70]} castShadow>
         <sphereGeometry args={[0.46, 22, 18]} />
-        <meshStandardMaterial color={bodyColor} roughness={0.42} metalness={0.18} transparent={ghost} opacity={opacity} />
+        <meshStandardMaterial color={bodyColor} roughness={0.35} metalness={0.2} transparent={ghost} opacity={opacity} emissive={ghostEmissive} emissiveIntensity={ghostEmissiveInt} />
       </mesh>
 
       {/* FLIR Sensor Turret */}
@@ -634,7 +641,7 @@ function MQ9ReaperModel({
         {/* Left Wing */}
         <mesh position={[5.4, 0.12, 0]} rotation={[0, 0, 0.025]} castShadow>
           <boxGeometry args={[10.8, 0.08, 0.82]} />
-          <meshStandardMaterial color={bodyColor} roughness={0.44} metalness={0.16} transparent={ghost} opacity={opacity} />
+          <meshStandardMaterial color={bodyColor} roughness={0.35} metalness={0.2} transparent={ghost} opacity={opacity} emissive={ghostEmissive} emissiveIntensity={ghostEmissiveInt} />
         </mesh>
         <mesh position={[10.8, 0.32, 0]} rotation={[0, 0, 0.42]} castShadow>
           <boxGeometry args={[0.4, 0.42, 0.55]} />
@@ -642,13 +649,13 @@ function MQ9ReaperModel({
         </mesh>
         <mesh position={[10.85, 0.48, 0]}>
           <sphereGeometry args={[0.065, 8, 8]} />
-          <meshBasicMaterial color="#ff2244" />
+          <meshBasicMaterial color={ghost ? '#00ffff' : '#ff2244'} />
         </mesh>
 
         {/* Right Wing */}
         <mesh position={[-5.4, 0.12, 0]} rotation={[0, 0, -0.025]} castShadow>
           <boxGeometry args={[10.8, 0.08, 0.82]} />
-          <meshStandardMaterial color={bodyColor} roughness={0.44} metalness={0.16} transparent={ghost} opacity={opacity} />
+          <meshStandardMaterial color={bodyColor} roughness={0.35} metalness={0.2} transparent={ghost} opacity={opacity} emissive={ghostEmissive} emissiveIntensity={ghostEmissiveInt} />
         </mesh>
         <mesh position={[-10.8, 0.32, 0]} rotation={[0, 0, -0.42]} castShadow>
           <boxGeometry args={[0.4, 0.42, 0.55]} />
@@ -656,22 +663,22 @@ function MQ9ReaperModel({
         </mesh>
         <mesh position={[-10.85, 0.48, 0]}>
           <sphereGeometry args={[0.065, 8, 8]} />
-          <meshBasicMaterial color="#00ff66" />
+          <meshBasicMaterial color={ghost ? '#00ffff' : '#00ff66'} />
         </mesh>
       </group>
 
       {/* V-Tail */}
       <mesh position={[0.55, 0.58, -2.85]} rotation={[0.18, 0, 0.78]} castShadow>
         <boxGeometry args={[0.08, 1.48, 0.56]} />
-        <meshStandardMaterial color={bodyColor} roughness={0.44} metalness={0.16} transparent={ghost} opacity={opacity} />
+        <meshStandardMaterial color={bodyColor} roughness={0.35} metalness={0.2} transparent={ghost} opacity={opacity} emissive={ghostEmissive} emissiveIntensity={ghostEmissiveInt} />
       </mesh>
       <mesh position={[-0.55, 0.58, -2.85]} rotation={[0.18, 0, -0.78]} castShadow>
         <boxGeometry args={[0.08, 1.48, 0.56]} />
-        <meshStandardMaterial color={bodyColor} roughness={0.44} metalness={0.16} transparent={ghost} opacity={opacity} />
+        <meshStandardMaterial color={bodyColor} roughness={0.35} metalness={0.2} transparent={ghost} opacity={opacity} emissive={ghostEmissive} emissiveIntensity={ghostEmissiveInt} />
       </mesh>
       <mesh position={[0, -0.50, -2.80]} rotation={[-0.12, 0, 0]} castShadow>
         <boxGeometry args={[0.08, 0.90, 0.54]} />
-        <meshStandardMaterial color={bodyColor} roughness={0.44} metalness={0.16} transparent={ghost} opacity={opacity} />
+        <meshStandardMaterial color={bodyColor} roughness={0.35} metalness={0.2} transparent={ghost} opacity={opacity} emissive={ghostEmissive} emissiveIntensity={ghostEmissiveInt} />
       </mesh>
 
       {/* Pusher Propeller */}
@@ -978,6 +985,204 @@ function CameraRig({
   );
 }
 
+// ── 7.5 HOLOGRAPHIC GHOST UAV SIMULATION (AUTONOMOUS FLIGHT & REPLANNING CORRIDOR) ──
+interface GhostUAVSimulationProps {
+  leadPos: [number, number, number];
+  leadHeading: number;
+  leadSpeed: number;
+  replanning: any;
+  paretoReplanning: any;
+}
+
+function GhostUAVSimulation({
+  leadPos,
+  leadHeading,
+  leadSpeed,
+  replanning,
+  paretoReplanning,
+}: GhostUAVSimulationProps) {
+  const ghostRef = useRef<THREE.Group>(null);
+  const ghostPos = useRef(new THREE.Vector3(leadPos[0] + 12, leadPos[1] + 2, leadPos[2] + 14));
+  const ghostHeading = useRef(leadHeading + 18);
+  const ghostRoll = useRef(0);
+  const ghostPitch = useRef(0);
+  const trailHistory = useRef<Array<[number, number, number]>>([]);
+  const lastHistoryTick = useRef(0);
+
+  // Check if replanning has an active contingency diversion
+  const isDivergent = Boolean(
+    replanning?.triggered ||
+    (paretoReplanning?.triggered && paretoReplanning?.recommended_option)
+  );
+
+  useFrame((state, delta) => {
+    const dt = Math.min(delta, 0.05);
+    const time = state.clock.elapsedTime;
+
+    let targetHeading = leadHeading;
+    let targetRoll = 0;
+    let targetPitch = 0;
+    let targetOffset: THREE.Vector3;
+
+    if (isDivergent) {
+      // ── CONTINGENCY DIVERSION REPLANNING MODE ──
+      // Ghost UAV leads the emergency diversion route (Return-To-Base / Low-Altitude Glide)
+      const diversionBank = -0.32; // -18 deg bank into turn
+      const headingOffsetDeg = 32; // Diverge 32 deg towards recovery airfield
+      targetHeading = (leadHeading + headingOffsetDeg) % 360;
+      targetRoll = diversionBank + Math.sin(time * 1.5) * 0.04;
+      targetPitch = 0.04; // slight nose-down glide descent
+
+      // Divergent world space corridor (glides down to safer altitude, e.g., 7,000 ft)
+      const rad = ((leadHeading + headingOffsetDeg) * Math.PI) / 180;
+      targetOffset = new THREE.Vector3(
+        Math.sin(rad) * 38 + Math.cos(rad) * 14,
+        -7.5 + Math.sin(time * 0.8) * 0.5, // 14:1 glide profile descent
+        Math.cos(rad) * 38 - Math.sin(rad) * 14
+      );
+    } else {
+      // ── PREDICTIVE HORIZON SHADOW TWIN MODE ──
+      // Ghost UAV projects the forward-simulated state (+25s ahead of physical UAV)
+      const rad = (leadHeading * Math.PI) / 180;
+      const forwardDist = 24 + Math.sin(time * 0.6) * 3;
+      const lateralDist = 12;
+      targetHeading = (leadHeading + Math.sin(time * 0.5) * 4) % 360;
+      targetRoll = Math.sin(time * 0.5) * 0.08;
+      targetPitch = Math.sin(time * 0.4) * 0.02;
+
+      targetOffset = new THREE.Vector3(
+        Math.sin(rad) * forwardDist + Math.cos(rad) * lateralDist,
+        3.2 + Math.sin(time * 0.7) * 0.4, // optimal cruise thermal cushion
+        Math.cos(rad) * forwardDist - Math.sin(rad) * lateralDist
+      );
+    }
+
+    // Smooth physical kinematics
+    const desiredPos = new THREE.Vector3(
+      leadPos[0] + targetOffset.x,
+      leadPos[1] + targetOffset.y,
+      leadPos[2] + targetOffset.z
+    );
+
+    ghostPos.current.lerp(desiredPos, dt * 2.2);
+    ghostHeading.current = THREE.MathUtils.lerp(ghostHeading.current, targetHeading, dt * 2.4);
+    ghostRoll.current = THREE.MathUtils.lerp(ghostRoll.current, targetRoll, dt * 3.2);
+    ghostPitch.current = THREE.MathUtils.lerp(ghostPitch.current, targetPitch, dt * 3.0);
+
+    if (ghostRef.current) {
+      ghostRef.current.position.copy(ghostPos.current);
+      ghostRef.current.rotation.y = (ghostHeading.current * Math.PI) / 180;
+      ghostRef.current.rotation.z = ghostRoll.current;
+      ghostRef.current.rotation.x = ghostPitch.current;
+    }
+
+    // Update trail history (every 100ms)
+    const now = performance.now();
+    if (now - lastHistoryTick.current > 100) {
+      lastHistoryTick.current = now;
+      trailHistory.current.push([ghostPos.current.x, ghostPos.current.y, ghostPos.current.z]);
+      if (trailHistory.current.length > 14) {
+        trailHistory.current.shift();
+      }
+    }
+  });
+
+  const ghostCoords: [number, number, number] = [
+    ghostPos.current.x,
+    ghostPos.current.y,
+    ghostPos.current.z,
+  ];
+
+  // Inter-airframe telemetry ribbon connecting lead UAV to Ghost UAV
+  const corridorLinePoints: [number, number, number][] = [
+    leadPos,
+    [
+      (leadPos[0] + ghostCoords[0]) / 2,
+      (leadPos[1] + ghostCoords[1]) / 2 + 1.2,
+      (leadPos[2] + ghostCoords[2]) / 2,
+    ],
+    ghostCoords,
+  ];
+
+  return (
+    <>
+      {/* Inter-Airframe Holographic Laser Corridor */}
+      <Line
+        points={corridorLinePoints}
+        color={isDivergent ? '#c084fc' : '#00f0ff'}
+        lineWidth={2.4}
+        dashed
+        dashScale={1.5}
+        dashSize={1.8}
+        gapSize={1.0}
+        transparent
+        opacity={0.85}
+      />
+
+      {/* Trailing Flight Path Ribbon behind Ghost UAV */}
+      {trailHistory.current.length > 2 && (
+        <Line
+          points={trailHistory.current}
+          color={isDivergent ? '#e879f9' : '#38bdf8'}
+          lineWidth={1.8}
+          dashed
+          dashScale={2.0}
+          transparent
+          opacity={0.6}
+        />
+      )}
+
+      {/* The Holographic Ghost UAV Airframe */}
+      <group ref={ghostRef}>
+        <MQ9ReaperModel
+          position={[0, 0, 0]}
+          heading={0}
+          health={100}
+          ghost={true}
+        />
+
+        {/* Tactical Holographic Overhead Reticle */}
+        <group position={[0, 2.8, 0]}>
+          <mesh rotation={[-Math.PI / 2, 0, 0]}>
+            <ringGeometry args={[1.5, 1.7, 32]} />
+            <meshBasicMaterial
+              color={isDivergent ? '#d8b4fe' : '#00f0ff'}
+              transparent
+              opacity={0.7}
+              side={THREE.DoubleSide}
+            />
+          </mesh>
+          <mesh rotation={[-Math.PI / 2, 0, 0]}>
+            <ringGeometry args={[0.5, 0.65, 16]} />
+            <meshBasicMaterial
+              color={isDivergent ? '#e9d5ff' : '#67e8f9'}
+              transparent
+              opacity={0.5}
+              side={THREE.DoubleSide}
+            />
+          </mesh>
+          {/* Pulsing Core Beacon */}
+          <mesh position={[0, 0.2, 0]}>
+            <sphereGeometry args={[0.16, 12, 12]} />
+            <meshBasicMaterial color={isDivergent ? '#f0abfc' : '#a5f3fc'} />
+          </mesh>
+          <pointLight color={isDivergent ? '#c084fc' : '#00e5ff'} intensity={2.0} distance={18} />
+        </group>
+
+        {/* Tactical Downward Hologram Laser Projection to Terrain */}
+        <mesh position={[0, -12, 0]}>
+          <cylinderGeometry args={[0.04, 0.12, 24, 8]} />
+          <meshBasicMaterial
+            color={isDivergent ? '#c084fc' : '#00e5ff'}
+            transparent
+            opacity={0.25}
+          />
+        </mesh>
+      </group>
+    </>
+  );
+}
+
 // ── 8. MAIN UAV SCENE WITH ENVIRONMENT ATMOSPHERE ──────────────────────────
 export function UAVScene({ view }: { view: string }) {
   const {
@@ -985,6 +1190,7 @@ export function UAVScene({ view }: { view: string }) {
     health,
     mission,
     replanning,
+    paretoReplanning,
     showGhostUAV,
     swarmEnabled,
     swarmFormation,
@@ -997,6 +1203,7 @@ export function UAVScene({ view }: { view: string }) {
     health: s.health,
     mission: s.mission,
     replanning: s.replanning,
+    paretoReplanning: s.paretoReplanning,
     showGhostUAV: s.showGhostUAV,
     swarmEnabled: s.swarmEnabled,
     swarmFormation: s.swarmFormation,
@@ -1191,6 +1398,7 @@ function TacticalFlightController({
     commsJamming,
     showGhostUAV,
     replanning,
+    paretoReplanning,
   } = useStore(s => ({
     uav: s.uav,
     health: s.health,
@@ -1205,6 +1413,7 @@ function TacticalFlightController({
     commsJamming: s.commsJamming,
     showGhostUAV: s.showGhostUAV,
     replanning: s.replanning,
+    paretoReplanning: s.paretoReplanning,
   }));
 
   // Persistent flight vectors
@@ -1368,13 +1577,14 @@ function TacticalFlightController({
         />
       )}
 
-      {/* Ghost UAV */}
-      {showGhostUAV && replanning?.triggered && (
-        <MQ9ReaperModel
-          position={[posArray[0] + 12, posArray[1], posArray[2] + 12]}
-          heading={currentHeading.current + 25}
-          health={100}
-          ghost
+      {/* Holographic Ghost UAV Autonomous Flight Simulation */}
+      {showGhostUAV && (
+        <GhostUAVSimulation
+          leadPos={posArray}
+          leadHeading={currentHeading.current}
+          leadSpeed={currentSpeed.current}
+          replanning={replanning}
+          paretoReplanning={paretoReplanning}
         />
       )}
     </>
