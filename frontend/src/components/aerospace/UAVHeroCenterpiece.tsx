@@ -4,6 +4,7 @@ import { ArrowRight, Crosshair, Eye, Network, Play, Shield, Volume2, VolumeX } f
 interface UAVHeroCenterpieceProps {
   onStartMission: () => void;
   onExploreTech: () => void;
+  onWatchDemo?: () => void;
 }
 
 const features = [
@@ -13,7 +14,7 @@ const features = [
   { label: 'Mission-ready reliability', icon: Crosshair },
 ];
 
-export const UAVHeroCenterpiece: React.FC<UAVHeroCenterpieceProps> = ({ onStartMission, onExploreTech }) => {
+export const UAVHeroCenterpiece: React.FC<UAVHeroCenterpieceProps> = ({ onStartMission, onExploreTech, onWatchDemo }) => {
   const [isMuted, setIsMuted] = useState(true);
   const [videoLoaded, setVideoLoaded] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -71,6 +72,14 @@ export const UAVHeroCenterpiece: React.FC<UAVHeroCenterpieceProps> = ({ onStartM
           <button onClick={onStartMission} className="visual-primary">
             <Play className="w-4 h-4 fill-current" />LAUNCH SIMULATOR
           </button>
+          {onWatchDemo && (
+            <button
+              onClick={onWatchDemo}
+              className="visual-primary !bg-emerald-500/20 !border-emerald-400/50 hover:!bg-emerald-500/30 text-emerald-300"
+            >
+              <Play className="w-4 h-4 fill-current text-emerald-400" />WATCH DEMO
+            </button>
+          )}
           <button onClick={onExploreTech} className="visual-secondary">
             EXPLORE SYSTEMS <ArrowRight className="w-4 h-4" />
           </button>
@@ -85,23 +94,22 @@ export const UAVHeroCenterpiece: React.FC<UAVHeroCenterpieceProps> = ({ onStartM
       </div>
       <div className="visual-system-online z-10"><i /> SYSTEMS ONLINE</div>
 
-      {/* ── Right-most Bottom Mute / Unmute Control ── */}
+      {/* ── Right-most Bottom Mute / Unmute Icon-Only Control ── */}
       <div className="absolute right-6 bottom-6 sm:right-10 sm:bottom-8 z-30 flex items-center">
         <button
           onClick={toggleMute}
-          className="group flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-[#051424]/85 hover:bg-[#09223d] active:scale-95 backdrop-blur-xl border border-sky-400/35 hover:border-sky-400/80 shadow-[0_8px_32px_rgba(0,0,0,0.65),0_0_16px_rgba(56,189,248,0.25)] text-white text-xs font-mono tracking-wider transition-all duration-300 cursor-pointer"
-          title={isMuted ? 'Unmute video audio' : 'Mute video audio'}
-          aria-label={isMuted ? 'Unmute video audio' : 'Mute video audio'}
+          className="group relative flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#051424]/85 hover:bg-[#0a2647] active:scale-95 backdrop-blur-2xl border border-sky-400/40 hover:border-sky-400/80 shadow-[0_8px_32px_rgba(0,0,0,0.65),0_0_16px_rgba(56,189,248,0.25)] transition-all duration-300 cursor-pointer"
+          title={isMuted ? 'Click to unmute audio' : 'Click to mute audio'}
+          aria-label={isMuted ? 'Unmute audio' : 'Mute audio'}
         >
-          <div className={`w-2 h-2 rounded-full transition-all ${isMuted ? 'bg-amber-400' : 'bg-emerald-400 shadow-[0_0_8px_#34d399]'}`} />
-          {isMuted ? (
-            <VolumeX className="w-4 h-4 text-slate-300 group-hover:text-amber-300 transition-colors" />
-          ) : (
-            <Volume2 className="w-4 h-4 text-emerald-400 group-hover:text-emerald-300 transition-colors animate-pulse" />
+          {!isMuted && (
+            <span className="absolute inset-0 rounded-full border border-emerald-400/50 animate-ping pointer-events-none" />
           )}
-          <span className="font-bold text-[11px] select-none">
-            {isMuted ? 'UNMUTE AUDIO' : 'MUTE AUDIO'}
-          </span>
+          {isMuted ? (
+            <VolumeX className="w-5 h-5 text-slate-300 group-hover:text-amber-400 transition-colors drop-shadow-[0_0_6px_rgba(251,191,36,0.6)]" />
+          ) : (
+            <Volume2 className="w-5 h-5 text-emerald-400 group-hover:text-emerald-300 transition-colors drop-shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+          )}
         </button>
       </div>
     </section>

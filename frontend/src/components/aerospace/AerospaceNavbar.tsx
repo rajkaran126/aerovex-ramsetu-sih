@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 
-export type NavTab = 'home' | 'technology' | 'specifications' | 'operations' | 'simulator' | 'contact';
+export type NavTab = 'home' | 'technology' | 'specifications' | 'demo' | 'operations' | 'simulator' | 'contact';
 
 interface AerospaceNavbarProps { activeTab: NavTab; onSelectTab: (tab: NavTab) => void; onLaunchMission: () => void; onOpenContact: () => void; }
 
 const NAV_LINKS: { key: NavTab; label: string }[] = [
   { key: 'home', label: 'Home' }, { key: 'technology', label: 'Systems' }, { key: 'specifications', label: 'Specifications' },
-  { key: 'operations', label: 'Operations' }, { key: 'simulator', label: 'Simulator' },
+  { key: 'demo', label: 'Demo' }, { key: 'operations', label: 'Operations' }, { key: 'simulator', label: 'Simulator' },
 ];
 
 export const AerospaceNavbar: React.FC<AerospaceNavbarProps> = ({ activeTab, onSelectTab, onLaunchMission, onOpenContact }) => {

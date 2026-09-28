@@ -24,6 +24,7 @@ const MissionSimulator = lazy(() => import('./pages/MissionSimulator'));
 const AIPrognostics = lazy(() => import('./pages/AIPrognostics'));
 const Maintenance = lazy(() => import('./pages/Maintenance'));
 const SystemReadiness = lazy(() => import('./pages/SystemReadiness'));
+const ProjectDemo = lazy(() => import('./pages/ProjectDemo'));
 
 export type OperationsSubTab = 'dashboard' | 'ai' | 'readiness' | 'maintenance';
 
@@ -165,6 +166,7 @@ export default function App() {
               <UAVHeroCenterpiece
                 onStartMission={() => setActiveTab('simulator')}
                 onExploreTech={() => setActiveTab('technology')}
+                onWatchDemo={() => setActiveTab('demo')}
               />
             </div>
           )}
@@ -180,6 +182,17 @@ export default function App() {
           {activeTab === 'specifications' && (
             <div className="relative w-full h-full overflow-y-auto overflow-x-hidden pt-16">
               <SpecsSection onLaunchMission={() => setActiveTab('simulator')} />
+            </div>
+          )}
+
+          {/* PROJECT DEMONSTRATION PAGE */}
+          {activeTab === 'demo' && (
+            <div className="relative w-full h-full overflow-y-auto overflow-x-hidden pt-16">
+              <ProjectDemo
+                onLaunchMission={() => setActiveTab('simulator')}
+                onExploreTech={() => setActiveTab('technology')}
+                onOpenConsole={() => setActiveTab('operations')}
+              />
             </div>
           )}
 

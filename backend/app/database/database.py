@@ -2,12 +2,16 @@
 from typing import Generator
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
-try:
-    from app.database.models import Base
-    from app.config import settings
-except (ImportError, ValueError):
-    from .models import Base
-    from ..config import settings
+import sys
+from pathlib import Path
+
+# Ensure backend directory is in sys.path so app.* imports always resolve
+_backend_root = str(Path(__file__).resolve().parent.parent.parent)
+if _backend_root not in sys.path:
+    sys.path.insert(0, _backend_root)
+
+from app.database.models import Base
+from app.config import settings
 import logging
 
 logger = logging.getLogger(__name__)
