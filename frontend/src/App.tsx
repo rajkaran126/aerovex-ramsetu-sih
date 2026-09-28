@@ -85,7 +85,10 @@ function StatusBar() {
           RISK: <span style={{ color: riskColor, fontWeight: 700 }}>{missionRisk.risk_level}</span>
         </span>
         <span style={{ color: '#1a2f4a' }}>|</span>
-        <span className="hidden sm:inline">VYOMAMEDHA PROPULSION INTELLIGENCE</span>
+        <span className="hidden sm:inline-flex items-center gap-1.5">
+          <img src="/images/vyomamedha-logo.png" alt="VYOMAMEDHA" className="w-3.5 h-3 object-contain" />
+          <span>VYOMAMEDHA PROPULSION INTELLIGENCE</span>
+        </span>
         <span style={{ color: '#1a2f4a' }}>|</span>
         <span>SIMULATED DATA · RESEARCH DEMO</span>
       </div>
@@ -96,9 +99,17 @@ function StatusBar() {
 function LoadingScreen() {
   return (
     <div className="h-full w-full flex items-center justify-center bg-transparent">
-      <div className="text-center p-8 rounded-3xl bg-slate-950/80 backdrop-blur-2xl border border-sky-400/20 shadow-2xl">
-        <div className="text-xl font-mono font-bold text-white tracking-[0.25em] mb-2">
+      <div className="text-center p-8 rounded-3xl bg-slate-950/80 backdrop-blur-2xl border border-sky-400/20 shadow-2xl flex flex-col items-center">
+        <img
+          src="/images/vyomamedha-logo.png"
+          alt="VYOMAMEDHA"
+          className="w-16 h-14 object-contain drop-shadow-[0_0_20px_rgba(56,189,248,0.7)] mb-3 animate-pulse"
+        />
+        <div className="text-xl font-mono font-bold text-white tracking-[0.25em] mb-1">
           VYOMAMEDHA
+        </div>
+        <div className="text-[10px] font-mono text-cyan-400 tracking-widest uppercase mb-3">
+          Predict. Understand. Protect.
         </div>
         <div className="text-xs font-mono text-sky-300/80 tracking-wider">
           LOADING TACTICAL SYSTEMS...

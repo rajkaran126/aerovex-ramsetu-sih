@@ -41,16 +41,21 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
         </button>
 
         {/* Modal Header */}
-        <div className="space-y-1 mb-6">
-          <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-ping" />
-            <span className="text-[10px] font-mono tracking-widest text-sky-400 uppercase font-semibold">
-              MISSION PROCUREMENT & BRIEFING
-            </span>
+        <div className="space-y-2 mb-6">
+          <div className="flex items-center gap-3">
+            <img src="/images/vyomamedha-logo.png" alt="VYOMAMEDHA" className="w-10 h-9 object-contain drop-shadow-[0_0_12px_rgba(56,189,248,0.7)] flex-shrink-0" />
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-ping" />
+                <span className="text-[10px] font-mono tracking-widest text-sky-400 uppercase font-semibold">
+                  MISSION PROCUREMENT & BRIEFING
+                </span>
+              </div>
+              <h3 className="text-xl font-bold text-white tracking-wide">
+                Deploy {AEROSPACE_CONTENT.brand.name} Systems
+              </h3>
+            </div>
           </div>
-          <h3 className="text-2xl font-bold text-white tracking-wide">
-            Deploy {AEROSPACE_CONTENT.brand.name} Systems
-          </h3>
           <p className="text-xs text-slate-400 font-light">
             Connect with our aerospace mission integration team for technical evaluation kits, flight
             trial schedules, and deployment specifications.
