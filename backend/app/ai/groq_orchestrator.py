@@ -15,7 +15,10 @@ import logging
 from typing import Dict, Any, List, Optional
 import httpx
 
-from ..config import settings
+try:
+    from app.config import settings
+except (ImportError, ValueError):
+    from ..config import settings
 
 logger = logging.getLogger(__name__)
 

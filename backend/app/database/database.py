@@ -2,8 +2,12 @@
 from typing import Generator
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
-from .models import Base
-from ..config import settings
+try:
+    from app.database.models import Base
+    from app.config import settings
+except (ImportError, ValueError):
+    from .models import Base
+    from ..config import settings
 import logging
 
 logger = logging.getLogger(__name__)
