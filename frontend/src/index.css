@@ -909,10 +909,14 @@ button:focus-visible {
 .reference-mobile-nav {
   display: none;
   pointer-events: auto;
-  background: #0a2334ee;
-  border: 1px solid #bde8ff3b;
-  backdrop-filter: blur(16px);
-  padding: 5px
+  background: rgba(8, 24, 40, 0.88);
+  border: 1px solid rgba(172, 226, 255, 0.22);
+  border-radius: 18px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  padding: 8px;
+  margin-top: 10px;
 }
 
 .reference-mobile-nav button {
@@ -1806,13 +1810,16 @@ button:focus-visible {
 
 .reference-nav-inner {
   height: 54px;
-  padding: 0 4px 0 16px;
-  border: 0;
-  border-bottom: 1px solid rgba(172, 226, 255, .16);
-  background: transparent;
-  box-shadow: none;
-  backdrop-filter: none;
-  grid-template-columns: 250px 1fr 250px
+  padding: 0 8px 0 22px;
+  border: 1px solid rgba(172, 226, 255, 0.22);
+  border-radius: 9999px;
+  background: rgba(8, 24, 40, 0.72);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 0 24px rgba(33, 207, 255, 0.08);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .reference-brand {
@@ -2533,6 +2540,7 @@ button:focus-visible {
   color: #00ff88;
 }
 
+.health-caution,
 .health-degraded {
   color: #ffcc00;
 }

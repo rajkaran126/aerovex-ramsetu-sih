@@ -199,7 +199,7 @@ export default function SystemReadiness() {
   const isGroqOnline = readiness?.groq?.configured ?? false;
 
   return (
-    <div className="w-full h-full p-5 flex flex-col gap-5 overflow-y-auto font-sans">
+    <div className="w-full h-full p-5 pb-28 flex flex-col gap-6 overflow-y-auto font-sans [&>*]:flex-shrink-0">
       {/* ─── Top Header with Glowing Vertical Accent Bar ─── */}
       <SectionHeader
         title="SYSTEM READINESS & RESOURCE MATRIX"

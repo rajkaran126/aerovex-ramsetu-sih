@@ -139,6 +139,7 @@ export const api = {
 
   startSimulation: () => apiFetch('/api/simulation/start', { method: 'POST' }),
   pauseSimulation: () => apiFetch('/api/simulation/pause', { method: 'POST' }),
+  stopSimulation: () => apiFetch('/api/simulation/pause', { method: 'POST' }),
   resetSimulation: () => apiFetch('/api/simulation/reset', { method: 'POST' }),
 
   controlSimulation: (params: Record<string, number>) =>

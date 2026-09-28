@@ -26,6 +26,11 @@ from ..digital_twin.engine_model import (
     DegradationState,
     isa_atmosphere,
 )
+from ..schemas.telemetry import (
+    UnifiedTelemetryRecord,
+    TelemetrySource,
+    MissionPhase,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -474,7 +479,56 @@ class EngineSimulator:
             "active_fault": self._state.active_fault.value,
             "fault_severity": round(self._state.fault_severity, 3),
             "edge_mode": self._state.edge_mode,
+            "unified_telemetry": self.get_unified_telemetry().model_dump(),
         }
+
+    def get_unified_telemetry(self) -> UnifiedTelemetryRecord:
+        """Export current simulator state conforming to the Unified Telemetry Schema"""
+        outputs = self._state.engine_outputs or {}
+        rpm = float(outputs.get("rpm", 5000.0))
+        map_inhg = float(outputs.get("map_inhg", 30.0))
+        power_kw = (rpm * map_inhg * self._state.throttle) / 1600.0
+        torque_nm = (power_kw * 9548.8) / max(rpm, 100.0)
+
+        # Determine data provenance
+        source = TelemetrySource.SIMULATION
+        if self._state.active_fault != FaultType.NONE or self._state.sensor_injections:
+            source = TelemetrySource.FAULT_INJECTION
+
+        isa_p, isa_t = isa_atmosphere(self._state.altitude_ft)
+
+        return UnifiedTelemetryRecord(
+            timestamp=time.time(),
+            engine_id="ROTAX-914-F01",
+            mission_id=f"MIS-{self._state.mission_profile}",
+            rpm=round(rpm, 1),
+            map=round(map_inhg, 2),
+            cht=round(float(outputs.get("cht_c", 160.0)), 1),
+            egt=round(float(outputs.get("egt_c", 680.0)), 1),
+            oil_pressure=round(float(outputs.get("oil_pressure_bar", 4.2)), 2),
+            oil_temperature=round(float(outputs.get("oil_temp_c", 85.0)), 1),
+            vibration=round(float(outputs.get("vibration", 0.9)), 2),
+            fuel_flow=round(float(outputs.get("fuel_flow_lph", 22.0)), 2),
+            throttle=round(float(self._state.throttle), 3),
+            ambient_temperature=round(float(self._state.ambient_temp_c), 1),
+            ambient_pressure=round(float(isa_p / 100.0), 2),
+            altitude=round(float(self._state.altitude_ft), 0),
+            airspeed=round(float(self._state.uav_speed_kts), 1),
+            engine_load=round(float(self._state.engine_load), 3),
+            torque=round(float(torque_nm), 2),
+            power=round(float(power_kw), 2),
+            efficiency=round(float(outputs.get("efficiency", 0.82)), 3),
+            latitude=round(float(self._state.uav_lat), 6),
+            longitude=round(float(self._state.uav_lon), 6),
+            heading=round(float(self._state.uav_heading_deg), 1),
+            mission_phase=MissionPhase.CRUISE,
+            sensor_health=100.0 if not self._state.sensor_injections else 40.0,
+            telemetry_integrity=1.0 if not self._state.sensor_injections else 0.5,
+            packet_loss=0.0,
+            timestamp_valid=True,
+            data_quality="OPTIMAL" if not self._state.sensor_injections else "DEGRADED",
+            source=source,
+        )
 
     def _update_degradation(self) -> None:
         """Gradually increase degradation based on active fault"""

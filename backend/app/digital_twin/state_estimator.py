@@ -13,7 +13,7 @@ physics-based expectation, which may indicate fault or degradation.
 
 import numpy as np
 from dataclasses import dataclass, field, asdict
-from typing import Dict, List, Optional, Deque
+from typing import Dict, List, Optional, Deque, Any
 from collections import deque
 import time
 import logging
@@ -24,6 +24,7 @@ from .engine_model import (
     EngineOutputs,
     DegradationState,
 )
+from .residual_engine import ResidualEngine, ResidualSnapshot
 
 logger = logging.getLogger(__name__)
 
@@ -95,7 +96,7 @@ class StateEstimator:
 
     Maintains rolling history and computes:
     - Expected state (healthy physics baseline)
-    - Residuals (actual - expected)
+    - Residuals (actual - expected) via ResidualEngine
     - Health index
     - Rolling statistics for anomaly features
     """
@@ -106,6 +107,7 @@ class StateEstimator:
     def __init__(self, history_len: int = HISTORY_LEN):
         self.history_len = history_len
         self._history: Deque[TwinState] = deque(maxlen=history_len)
+        self.residual_engine = ResidualEngine(window_size=history_len)
         self._step = 0
 
     def update(
@@ -121,6 +123,7 @@ class StateEstimator:
         degradation — representing what a healthy engine would produce.
         """
         self._step += 1
+        ts = time.time()
 
         # ── Compute expected state ───────────────────────────────────────────
         healthy_inputs = EngineInputs(
@@ -137,25 +140,41 @@ class StateEstimator:
         actual_d = actual_outputs.to_dict()
         expected_d = expected_outputs.to_dict()
 
-        # ── Compute residuals ────────────────────────────────────────────────
-        keys = ["rpm", "egt_c", "cht_c", "oil_temp_c", "oil_pressure_bar",
-                "fuel_flow_lph", "vibration"]
-        residual = ResidualState()
-        for k in keys:
-            setattr(residual, k, actual_d.get(k, 0) - expected_d.get(k, 0))
+        # ── Compute continuous residuals via ResidualEngine ─────────────────
+        res_snapshot = self.residual_engine.compute_residual_vector(
+            actual=actual_d,
+            expected=expected_d,
+            timestamp=ts,
+        )
+
+        res_dict = {
+            "rpm": round(res_snapshot.raw_residuals.get("rpm", 0.0), 2),
+            "egt_c": round(res_snapshot.raw_residuals.get("egt_c", 0.0), 2),
+            "cht_c": round(res_snapshot.raw_residuals.get("cht_c", 0.0), 2),
+            "oil_temp_c": round(res_snapshot.raw_residuals.get("oil_temp_c", 0.0), 2),
+            "oil_pressure_bar": round(res_snapshot.raw_residuals.get("oil_pressure_bar", 0.0), 4),
+            "fuel_flow_lph": round(res_snapshot.raw_residuals.get("fuel_flow_lph", 0.0), 3),
+            "vibration": round(res_snapshot.raw_residuals.get("vibration", 0.0), 4),
+            "map": round(res_snapshot.raw_residuals.get("map", 0.0), 2),
+            "magnitude": round(res_snapshot.magnitude, 4),
+        }
 
         state = TwinState(
-            timestamp=time.time(),
+            timestamp=ts,
             step=self._step,
             actual=actual_d,
             expected=expected_d,
-            residual=residual.to_dict(),
+            residual=res_dict,
             health_index=round(health, 2),
             degradation=inputs.degradation.to_dict(),
             twin_confidence=1.0,
         )
         self._history.append(state)
         return state
+
+    def get_residual_statistics(self) -> Dict[str, Any]:
+        """Return rolling statistical profile (mean, variance, skewness, covariance)."""
+        return self.residual_engine.get_rolling_statistics()
 
     def get_rolling_features(self, window: int = 20) -> Dict[str, float]:
         """

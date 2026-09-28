@@ -1,0 +1,59 @@
+{
+  "version": "3.4.1",
+  "engine_type": "Rotax 914 / 915 iS Turbocharged Aero-Piston",
+  "operating_envelope": {
+    "altitude_ft_max": 25000.0,
+    "airspeed_kts_max": 140.0,
+    "airspeed_kts_cruise": 105.0,
+    "rpm_max": 5800.0,
+    "rpm_continuous": 5500.0,
+    "rpm_idle": 1400.0,
+    "map_inhg_max": 39.9,
+    "map_inhg_continuous": 35.4
+  },
+  "channel_limits": {
+    "rpm": { "min": 1200.0, "max": 6000.0, "redline": 5800.0, "caution": 5500.0, "unit": "RPM" },
+    "map": { "min": 10.0, "max": 42.0, "redline": 39.9, "caution": 35.4, "unit": "inHg" },
+    "egt_c": { "min": 200.0, "max": 950.0, "redline": 880.0, "caution": 850.0, "unit": "deg C" },
+    "cht_c": { "min": 50.0, "max": 250.0, "redline": 230.0, "caution": 210.0, "unit": "deg C" },
+    "oil_pressure_bar": { "min": 0.8, "max": 8.0, "redline_low": 1.5, "caution_low": 2.0, "redline_high": 7.0, "unit": "bar" },
+    "oil_temp_c": { "min": 40.0, "max": 150.0, "redline": 130.0, "caution": 115.0, "unit": "deg C" },
+    "fuel_flow_lph": { "min": 0.0, "max": 45.0, "redline": 38.0, "caution": 34.0, "unit": "L/h" },
+    "vibration_g_rms": { "min": 0.0, "max": 5.0, "redline": 2.5, "caution": 1.8, "unit": "g-RMS" }
+  },
+  "thermal_limits": {
+    "cht_critical_threshold_c": 230.0,
+    "egt_critical_threshold_c": 880.0,
+    "oil_temp_critical_threshold_c": 130.0,
+    "min_thermal_margin_c": 15.0
+  },
+  "normalization_factors": {
+    "rpm_ref": 5800.0,
+    "map_ref": 39.9,
+    "egt_ref": 880.0,
+    "cht_ref": 230.0,
+    "oil_p_ref": 5.0,
+    "oil_t_ref": 130.0,
+    "vib_ref": 2.5
+  },
+  "health_weights": {
+    "residual_weight": 0.40,
+    "degradation_weight": 0.25,
+    "thermal_margin_weight": 0.15,
+    "vibration_weight": 0.10,
+    "oil_pressure_weight": 0.10
+  },
+  "health_thresholds": {
+    "healthy_min": 85.0,
+    "caution_min": 60.0,
+    "critical_threshold": 60.0
+  },
+  "model_coefficients": {
+    "isa_lapse_rate_k_per_m": 0.0065,
+    "isa_sea_level_temp_k": 288.15,
+    "isa_sea_level_pressure_pa": 101325.0,
+    "turbo_boost_ratio": 1.35,
+    "combustion_delta_t": 680.0,
+    "thermal_heat_capacity": 420.0
+  }
+}

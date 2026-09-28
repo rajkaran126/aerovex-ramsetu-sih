@@ -33,9 +33,19 @@ from .ai.fault_classifier import FaultClassifier
 from .ai.rul import RULPredictor
 from .ai.explainability import ExplainabilityEngine
 from .ai.cyber import TelemetryIntegrityMonitor
+from .cyber_security.zero_trust_shield import ZeroTrustCyberShield
+from .telemetry.self_healing import SelfHealingPipeline
+from .degradation.tracker import DegradationTracker
+from .schemas.telemetry import TelemetrySource
 from .mission.risk_model import MissionRiskEngine
 from .mission.mission_replanner import MissionReplanner
+from .replanning.pareto_optimizer import ParetoReplanner
 from .mission.what_if import WhatIfSimulator, WhatIfRequest
+from .swarm.swarm_manager import SwarmManager
+from .gps.gps_navic import GPSNavICReceiver
+from .gps.terrain import TerrainDiversionManager
+from .maintenance.taskcard_generator import MaintenanceTaskcardGenerator
+from .storage.immutable_logbook import ImmutableDigitalLogbook
 
 logger = logging.getLogger(__name__)
 
@@ -149,14 +159,24 @@ class AeroTwinOrchestrator:
         self._rul_predictor: Optional[RULPredictor] = None
         self._explainability: Optional[ExplainabilityEngine] = None
         self._cyber_monitor = TelemetryIntegrityMonitor()
+        self._zero_trust_shield = ZeroTrustCyberShield()
+        self._self_healing = SelfHealingPipeline()
+        self._degradation_tracker = DegradationTracker()
         self._risk_engine = MissionRiskEngine()
         self._replanner = MissionReplanner()
+        self._pareto_replanner = ParetoReplanner()
         self._what_if_sim = WhatIfSimulator()
+        self._swarm_manager = SwarmManager()
+        self._gps_navic = GPSNavICReceiver()
+        self._terrain_manager = TerrainDiversionManager()
+        self._taskcard_gen = MaintenanceTaskcardGenerator()
+        self._digital_logbook = ImmutableDigitalLogbook(engine_id="ROTAX-914-DEMO")
 
         # State history
         self._health_history: deque = deque(maxlen=500)
         self._full_system_state: Dict = {}
         self._replanning_result: Optional[Dict] = None
+        self._pareto_result: Optional[Dict] = None
         self._replay_events: List[Dict] = []
         self._step = 0
 
@@ -246,14 +266,27 @@ class AeroTwinOrchestrator:
         )
         rolling = self.state_estimator.get_rolling_features(20)
 
-        # ── Cyber/Telemetry Integrity ─────────────────────────────────────
+        # ── Cyber/Telemetry Integrity & Zero-Trust Shield ────────────────
         integrity = self._cyber_monitor.analyze(
             actual=actual,
             expected=twin.expected,
             residual=twin.residual,
         )
         integrity_dict = integrity.to_dict()
-        corrected_actual = self._cyber_monitor.get_corrected_telemetry(actual, integrity)
+
+        shield_report = self._zero_trust_shield.evaluate_telemetry(
+            actual=actual,
+            expected=twin.expected,
+            residual=twin.residual,
+            timestamp=raw.get("simulation_time_s"),
+        )
+        healed_actual, channel_sources, healing_events = self._self_healing.heal_telemetry(
+            actual_telemetry=actual,
+            expected_telemetry=twin.expected,
+            cyber_report=shield_report,
+            step=self._step,
+        )
+        corrected_actual = healed_actual
 
         # ── AI Anomaly Detection ─────────────────────────────────────────
         anomaly = {"anomaly_score": 0.0, "is_anomaly": False, "confidence": 0.5, "anomaly_class": "NORMAL"}
@@ -281,6 +314,15 @@ class AeroTwinOrchestrator:
             anomaly_score=anomaly["anomaly_score"],
         )
         self._health_history.append(health)
+
+        # ── Continuous Degradation Tracking ──────────────────────────────
+        deg_metrics = self._degradation_tracker.update(
+            health=health,
+            degradation_dict=inputs.degradation.to_dict(),
+            cht_c=actual.get("cht_c", 170.0),
+            vibration=actual.get("vibration", 1.0),
+            step=self._step,
+        )
 
         # Update twin with correct health
         twin.health_index = health
@@ -320,8 +362,8 @@ class AeroTwinOrchestrator:
             degradation=inputs.degradation.to_dict(),
         )
 
-        # ── Mission Replanning ───────────────────────────────────────────
-        if mission_risk.risk_level in ("HIGH", "MEDIUM") and self._step % 10 == 0:
+        # ── Mission Replanning & Pareto Frontier ─────────────────────────
+        if (mission_risk.risk_level in ("HIGH", "MEDIUM") or health < 75.0) and self._step % 10 == 0:
             sim_state = self.simulator.get_state()
             replanning = self._replanner.evaluate(
                 current_risk=mission_risk.risk_level,
@@ -339,6 +381,22 @@ class AeroTwinOrchestrator:
             )
             self._replanning_result = replanning.to_dict()
 
+            pareto_res = self._pareto_replanner.evaluate_pareto_frontier(
+                current_health=health,
+                current_risk=mission_risk.risk_level,
+                degradation=inputs.degradation.to_dict(),
+                rul_median=rul_result.get("rul_median", 99.0),
+                rul_lower=rul_result.get("rul_lower", 80.0),
+                mission_remaining_hours=raw["mission_remaining_hours"],
+                current_throttle=raw["throttle"],
+                current_altitude_ft=raw["altitude_ft"],
+                ambient_temp_c=raw["ambient_temp_c"],
+                fault_probabilities=fault_probs,
+                uav_lat=sim_state.uav_lat,
+                uav_lon=sim_state.uav_lon,
+            )
+            self._pareto_result = pareto_res.to_dict()
+
         # ── Record replay events ─────────────────────────────────────────
         self._record_replay_events(
             step=self._step,
@@ -350,9 +408,43 @@ class AeroTwinOrchestrator:
             raw=raw,
         )
 
+        # ── SwarmNet Tactical Mesh & GNSS Navigation ─────────────────────
+        sim_state = self.simulator.get_state()
+        swarm_state = self._swarm_manager.update_step(health, self._step)
+        gnss_state = self._gps_navic.update(
+            uav_lat=sim_state.uav_lat,
+            uav_lon=sim_state.uav_lon,
+            altitude_ft=raw["altitude_ft"],
+            speed_kts=sim_state.uav_speed_kts,
+            heading_deg=sim_state.uav_heading_deg,
+        )
+        diversion_airfields = self._terrain_manager.evaluate_reachability(
+            uav_lat=gnss_state.latitude,
+            uav_lon=gnss_state.longitude,
+            altitude_ft=raw["altitude_ft"],
+            ground_speed_kts=sim_state.uav_speed_kts,
+        )
+
+        # ── Prescriptive Maintenance Taskcards ───────────────────────────
+        taskcards = self._taskcard_gen.generate_taskcards(
+            fault_probabilities=fault_probs,
+            health_index=health,
+            p10_rul_hours=rul_result.get("rul_lower", 50.0),
+            active_fault=raw["active_fault"],
+            degradation=inputs.degradation.to_dict(),
+        )
+
+        # ── Immutable Digital Logbook Ledger ─────────────────────────────
+        if healing_events:
+            for ev in healing_events:
+                self._digital_logbook.append_event("SELF_HEALING_ACTIVATION", ev.to_dict())
+        if self._step % 50 == 0:
+            self._digital_logbook.append_event("TELEMETRY_SNAPSHOT", {
+                "step": self._step, "health": round(health, 2), "top_fault": max(fault_probs, key=fault_probs.get)
+            })
+
         # ── Assemble complete state ──────────────────────────────────────
         health_label = self.health_config.health_label(health)
-        sim_state = self.simulator.get_state()
 
         state = {
             "step": self._step,
@@ -377,6 +469,9 @@ class AeroTwinOrchestrator:
                 "actual": actual,
                 "expected": twin.expected,
                 "residual": twin.residual,
+                "healed": healed_actual,
+                "channel_sources": {k: v.value if hasattr(v, 'value') else str(v) for k, v in channel_sources.items()},
+                "reconstructed_channels": self._self_healing.get_active_reconstructed_channels(),
             },
 
             "health": {
@@ -394,6 +489,7 @@ class AeroTwinOrchestrator:
             },
 
             "degradation": inputs.degradation.to_dict(),
+            "degradation_metrics": deg_metrics.to_dict(),
 
             "anomaly": anomaly,
 
@@ -407,14 +503,17 @@ class AeroTwinOrchestrator:
             "rul": rul_result,
 
             "integrity": integrity_dict,
+            "cyber_shield": shield_report.to_dict(),
+            "self_healing_events": [e.to_dict() for e in healing_events],
 
             "mission_risk": mission_risk.to_dict(),
 
             "replanning": self._replanning_result,
+            "pareto_replanning": self._pareto_result,
 
             "uav": {
-                "lat": sim_state.uav_lat,
-                "lon": sim_state.uav_lon,
+                "lat": gnss_state.latitude,
+                "lon": gnss_state.longitude,
                 "heading_deg": sim_state.uav_heading_deg,
                 "speed_kts": sim_state.uav_speed_kts,
                 "altitude_ft": raw["altitude_ft"],
@@ -422,9 +521,16 @@ class AeroTwinOrchestrator:
                 "current_waypoint_idx": sim_state.current_waypoint_idx,
             },
 
+            "swarm": swarm_state,
+            "gnss": gnss_state.to_dict(),
+            "emergency_diversion_airfields": [a.to_dict() for a in diversion_airfields[:5]],
+
             "edge_mode": raw["edge_mode"],
             "buffered_steps": sim_state.buffered_steps,
             "scenario": sim_state.scenario,
+            "unified_telemetry": raw.get("unified_telemetry"),
+            "maintenance_taskcards": [c.to_dict() for c in taskcards],
+            "digital_logbook": self._digital_logbook.to_dict(),
         }
 
         return _sanitize_for_json(state)
@@ -507,8 +613,19 @@ class AeroTwinOrchestrator:
         self.simulator.reset()
         self._replay_events = []
         self._replanning_result = None
+        self._pareto_result = None
         self._health_history.clear()
         self._cyber_monitor.reset()
+        self._zero_trust_shield.reset()
+        self._self_healing.reset()
+        self._degradation_tracker.reset()
+        self._digital_logbook.reset()
+        self._digital_logbook.append_event("SORTIE_START", {
+            "scenario": scenario_name,
+            "profile": scenario["profile"],
+            "environment": scenario["environment"],
+            "description": scenario["description"],
+        })
         self.simulator.get_state().scenario = scenario_name
 
         self.simulator.set_mission_profile(scenario["profile"])

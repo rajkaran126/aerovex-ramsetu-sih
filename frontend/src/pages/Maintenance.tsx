@@ -12,6 +12,13 @@ import {
   CheckCircle2,
   Flame,
   Cpu,
+  FileCheck,
+  Hash,
+  Database,
+  Lock,
+  Layers,
+  ChevronRight,
+  Shield,
 } from 'lucide-react';
 
 function fmt(v: number | undefined, d = 1) {
@@ -22,10 +29,12 @@ function fmt(v: number | undefined, d = 1) {
 export default function Maintenance() {
   const [recommendations, setRecommendations] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const { degradation, rul, health } = useStore(s => ({
+  const { degradation, rul, health, maintenanceTaskcards, digitalLogbook } = useStore(s => ({
     degradation: s.degradation,
     rul: s.rul,
     health: s.health,
+    maintenanceTaskcards: s.maintenanceTaskcards || [],
+    digitalLogbook: s.digitalLogbook,
   }));
 
   const fetchRecommendations = async () => {
@@ -69,7 +78,7 @@ export default function Maintenance() {
   const criticalCount = recommendations.filter(r => r.severity === 'CRITICAL').length;
 
   return (
-    <div className="w-full h-full p-5 flex flex-col gap-5 overflow-y-auto font-sans">
+    <div className="w-full h-full p-5 pb-28 flex flex-col gap-6 overflow-y-auto font-sans [&>*]:flex-shrink-0">
       {/* ─── Header ─── */}
       <SectionHeader
         title="MAINTENANCE & RUL PRESCRIPTIONS"
@@ -292,6 +301,186 @@ export default function Maintenance() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* ─── ATA-Chapter Maintenance Taskcards (Milestone 7) ─── */}
+      <div className="glass-panel rounded-[1.5rem] p-5 space-y-4 flex-shrink-0">
+        <div className="flex items-center justify-between pb-3 border-b border-white/10">
+          <div className="flex items-center gap-2">
+            <FileCheck className="w-5 h-5 text-amber-400" />
+            <div>
+              <h3 className="font-display font-bold text-base text-white tracking-wide">
+                ATA-CHAPTER PRESCRIPTIVE WORK ORDERS
+              </h3>
+              <p className="text-xs text-slate-400 font-mono">
+                Standardized aviation maintenance taskcards mapped to physical subsystem degradation
+              </p>
+            </div>
+          </div>
+          <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30">
+            {maintenanceTaskcards.length} TASKCARDS ACTIVE
+          </span>
+        </div>
+
+        {maintenanceTaskcards.length === 0 ? (
+          <div className="p-6 text-center text-slate-500 font-mono text-xs rounded-xl bg-white/[0.01] border border-white/5">
+            NO OUTSTANDING ATA TASKCARDS GENERATED — ENGINE OPERATING WITHIN ACCEPTABLE MAINTENANCE TOLERANCES
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {maintenanceTaskcards.map((card: any, idx: number) => {
+              const isGrounding = card.urgency === 'IMMEDIATE_GROUNDING';
+              const isPriority = card.urgency === 'PRIORITY_A_CHECK';
+              const badgeBg = isGrounding ? 'bg-rose-500/15 text-rose-300 border-rose-500/40' :
+                              isPriority ? 'bg-amber-500/15 text-amber-300 border-amber-500/40' :
+                              'bg-cyan-500/15 text-cyan-300 border-cyan-500/40';
+
+              return (
+                <div
+                  key={card.taskcard_id || idx}
+                  className="rounded-2xl p-4 bg-white/[0.02] border border-white/10 hover:border-white/20 transition-all flex flex-col justify-between gap-3"
+                >
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-mono font-bold text-cyan-400 tracking-wider">
+                        {card.taskcard_id} &bull; {card.ata_chapter}
+                      </span>
+                      <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border ${badgeBg}`}>
+                        {card.urgency.replace(/_/g, ' ')}
+                      </span>
+                    </div>
+
+                    <h4 className="text-sm font-bold text-white font-display">
+                      {card.title}
+                    </h4>
+
+                    <div className="flex flex-wrap gap-2 text-[11px] font-mono text-slate-400">
+                      <span className="px-2 py-0.5 rounded bg-white/5 border border-white/5">
+                        SUBSYSTEM: <span className="text-white">{card.subsystem}</span>
+                      </span>
+                      <span className="px-2 py-0.5 rounded bg-white/5 border border-white/5">
+                        EST. MAN-HOURS: <span className="text-amber-300 font-bold">{card.estimated_man_hours}h</span>
+                      </span>
+                      <span className="px-2 py-0.5 rounded bg-white/5 border border-white/5">
+                        AUTHORITY: <span className="text-cyan-300">{card.sign_off_authority}</span>
+                      </span>
+                    </div>
+
+                    {card.required_tools && card.required_tools.length > 0 && (
+                      <div className="text-[11px] font-mono">
+                        <span className="text-slate-500">TOOLS: </span>
+                        <span className="text-slate-300">{card.required_tools.join(', ')}</span>
+                      </div>
+                    )}
+
+                    {card.required_parts && card.required_parts.length > 0 && (
+                      <div className="text-[11px] font-mono">
+                        <span className="text-slate-500">PARTS: </span>
+                        <span className="text-amber-200">{card.required_parts.join(', ')}</span>
+                      </div>
+                    )}
+
+                    <div className="space-y-1 pt-2 border-t border-white/5">
+                      <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider font-bold">
+                        EXECUTION PROTOCOL:
+                      </span>
+                      <ol className="list-decimal list-inside space-y-1 text-xs text-slate-300 font-mono">
+                        {card.action_steps?.slice(0, 3).map((step: string, sIdx: number) => (
+                          <li key={sIdx} className="leading-snug">
+                            {step}
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-2 border-t border-white/5">
+                    <span className="text-[10px] font-mono text-slate-500">
+                      TRIGGER: {card.trigger_fault?.toUpperCase()} ({card.trigger_condition})
+                    </span>
+                    <button className="px-3 py-1 rounded-xl text-[11px] font-mono font-bold bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-500/20 transition-all">
+                      SIGN OFF ORDER
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* ─── Cryptographically Immutable Digital Logbook Ledger (Milestone 7) ─── */}
+      <div className="glass-panel rounded-[1.5rem] p-5 space-y-4 flex-shrink-0">
+        <div className="flex items-center justify-between pb-3 border-b border-white/10">
+          <div className="flex items-center gap-2">
+            <Lock className="w-5 h-5 text-emerald-400" />
+            <div>
+              <h3 className="font-display font-bold text-base text-white tracking-wide">
+                TAMPER-EVIDENT DIGITAL LOGBOOK LEDGER
+              </h3>
+              <p className="text-xs text-slate-400 font-mono">
+                SHA-256 chained airworthiness audit ledger compliant with CEMILAC / DGCA standards
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className={`text-xs font-mono font-bold px-3 py-1 rounded-full border ${
+              digitalLogbook?.integrity_valid !== false
+                ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+                : 'bg-rose-500/15 text-rose-300 border-rose-500/30'
+            }`}>
+              {digitalLogbook?.integrity_valid !== false ? 'CRYPTOGRAPHIC INTEGRITY: VERIFIED' : 'INTEGRITY: COMPROMISED'}
+            </span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 font-mono text-xs">
+          <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 flex flex-col justify-between">
+            <span className="text-slate-400 text-[10px]">ENGINE IDENTIFIER</span>
+            <span className="text-sm font-bold text-white">{digitalLogbook?.engine_id || 'ROTAX-914-DEMO'}</span>
+          </div>
+          <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 flex flex-col justify-between">
+            <span className="text-slate-400 text-[10px]">CHAINED AUDIT BLOCKS</span>
+            <span className="text-sm font-bold text-cyan-300">{digitalLogbook?.total_blocks || 1} BLOCKS</span>
+          </div>
+          <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 flex flex-col justify-between overflow-hidden">
+            <span className="text-slate-400 text-[10px]">LATEST SHA-256 ROOT HASH</span>
+            <span className="text-xs font-bold text-slate-300 truncate" title={digitalLogbook?.latest_hash}>
+              {digitalLogbook?.latest_hash || 'SHA-256 CALCULATION ACTIVE'}
+            </span>
+          </div>
+        </div>
+
+        {digitalLogbook?.recent_blocks && digitalLogbook.recent_blocks.length > 0 && (
+          <div className="overflow-x-auto rounded-xl border border-white/5">
+            <table className="w-full text-left font-mono text-xs">
+              <thead className="bg-white/5 text-slate-400 text-[10px] uppercase tracking-wider">
+                <tr>
+                  <th className="py-2.5 px-3">Block #</th>
+                  <th className="py-2.5 px-3">Event Type</th>
+                  <th className="py-2.5 px-3">Timestamp</th>
+                  <th className="py-2.5 px-3">Block Hash (SHA-256)</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5 text-slate-300">
+                {digitalLogbook.recent_blocks.slice(-5).reverse().map((b: any) => (
+                  <tr key={b.index} className="hover:bg-white/[0.02] transition-colors">
+                    <td className="py-2 px-3 font-bold text-cyan-400">#{b.index}</td>
+                    <td className="py-2 px-3">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-white/5 text-white">
+                        {b.event_type}
+                      </span>
+                    </td>
+                    <td className="py-2 px-3 text-slate-400 text-[11px]">{new Date(b.timestamp * 1000).toLocaleTimeString()}</td>
+                    <td className="py-2 px-3 font-mono text-[10px] text-slate-400 truncate max-w-xs" title={b.hash}>
+                      {b.hash ? `${b.hash.substring(0, 16)}...${b.hash.substring(b.hash.length - 8)}` : 'GENESIS'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );

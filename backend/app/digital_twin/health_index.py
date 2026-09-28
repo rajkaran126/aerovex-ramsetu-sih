@@ -22,9 +22,13 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class HealthConfig:
-    """Configurable health scoring thresholds and weights"""
-    # Threshold boundaries
-    healthy_min: float = 80.0
+    """Configurable health scoring thresholds and weights per §38 Master Implementation Spec"""
+    # Master thresholds: >85 Healthy, 60-85 Caution, <60 Critical
+    healthy_min: float = 85.0
+    caution_min: float = 60.0
+    critical_threshold: float = 60.0
+
+    # Backwards compatibility fields
     degraded_min: float = 60.0
     warning_min: float = 40.0
     critical_min: float = 20.0
@@ -37,13 +41,11 @@ class HealthConfig:
     w_lubrication: float = 0.10
 
     def health_label(self, health: float) -> str:
-        if health >= self.healthy_min:
+        if health > self.healthy_min:
             return "HEALTHY"
-        elif health >= self.degraded_min:
-            return "DEGRADED"
-        elif health >= self.warning_min:
-            return "WARNING"
-        elif health >= self.critical_min:
+        elif health >= self.caution_min:
+            return "CAUTION"
+        elif health >= 30.0:
             return "CRITICAL"
         else:
             return "SEVERE"
@@ -52,6 +54,7 @@ class HealthConfig:
         label = self.health_label(health)
         colors = {
             "HEALTHY": "#00ff88",
+            "CAUTION": "#ffcc00",
             "DEGRADED": "#ffcc00",
             "WARNING": "#ff8800",
             "CRITICAL": "#ff3300",

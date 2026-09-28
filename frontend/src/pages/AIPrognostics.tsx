@@ -242,7 +242,7 @@ export default function AIPrognostics() {
   };
 
   return (
-    <div className="w-full h-full p-6 flex flex-col gap-6 overflow-y-auto font-sans">
+    <div className="w-full h-full p-6 pb-28 flex flex-col gap-6 overflow-y-auto font-sans [&>*]:flex-shrink-0">
       {/* ─── Top Header ─── */}
       <SectionHeader
         title="AI PROGNOSTICS & FAULT ATTRIBUTION"
@@ -293,7 +293,7 @@ export default function AIPrognostics() {
       </div>
 
       {/* ─── 3-Column Glass Layout ─── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 flex-1 items-stretch min-h-0">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 min-h-[560px] items-stretch flex-shrink-0">
         {/* Column 1: Fault Classifier Probabilities (4 Cols) */}
         <div className="lg:col-span-4 glass-panel rounded-[1.5rem] p-5 flex flex-col">
           <div className="flex items-center justify-between pb-3 mb-4 border-b border-white/10">
@@ -384,7 +384,7 @@ export default function AIPrognostics() {
           </div>
 
           {/* Degradation Trend */}
-          <div className="flex-1 min-h-0">
+          <div className="flex-1 min-h-[280px]">
             <DegradationTrend />
           </div>
         </div>

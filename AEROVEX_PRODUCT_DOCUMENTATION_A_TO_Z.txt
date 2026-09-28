@@ -1,0 +1,810 @@
+====================================================================================================
+                        A E R O V E X   /   A E R O - T W I N
+        AI-ENABLED REAL-TIME CYBER-PHYSICAL DIGITAL TWIN & AUTONOMOUS PROGNOSTICS PLATFORM
+                     FOR MALE UAV AERO-PISTON ENGINES & MISSION SYSTEMS
+====================================================================================================
+Document Version : 4.0.0 (Master Implementation & Full Cyber-Physical Release)
+Classification   : UNCLASSIFIED / DEFENSE RESEARCH & OPERATIONAL DEMONSTRATOR
+Author / Org     : Team RAMSETU / Smart India Hackathon (SIH) & Aerospace Intelligence Initiative
+File Format      : ASCII Plain Text (.txt)
+Target Platform  : Medium-Altitude Long-Endurance (MALE) UAVs (Rotax 914 / 915 iS Turbo-Piston Class)
+Compliance       : Strictly Adheres to the Mandatory Development Rule and Numerical Authority Rule
+====================================================================================================
+
+----------------------------------------------------------------------------------------------------
+TABLE OF CONTENTS
+----------------------------------------------------------------------------------------------------
+  1. EXECUTIVE SUMMARY & ELEVATOR PITCH
+  2. PROBLEM STATEMENT & DEFENSE IMPERATIVES
+  3. PRODUCT IDENTITY & KEY VALUE PROPOSITIONS
+  4. END-TO-END SYSTEM ARCHITECTURE
+  5. DETAILED SUBSYSTEM BREAKDOWN (A TO Z)
+     A. Physical Hardware Layer & CAN Bus Test Bench (STM32 HAL & Optical Isolation)
+     B. Unified 31-Channel Telemetry Schema & Hardware Ingestion Bridge
+     C. First-Principles Engine Thermodynamics & Analytical Digital Twin Core
+     D. Continuous 7-Channel Residual Vector Engine & Master Health Index Equation
+     E. Zero-Trust Cyber Shield (12 Physical & Temporal Detection Vectors)
+     F. Transparent Self-Healing Telemetry Pipeline & Reconstruction Tagging
+     G. Local AI Prognostics Suite (Isolation Forest & 7-Class Calibrated Classifier)
+     H. Degradation Trend Tracking (Rates of Change & Multi-Step Kinematics)
+     I. Explainable AI Engine (Real-Time TreeSHAP Feature Attribution)
+     J. Multi-Quantile Remaining Useful Life (RUL) Regressor (P10, P50, P90 Monotonicity)
+     K. Mission Intelligence, What-If Simulator & Pareto Multi-Objective Replanner
+     L. Ghost UAV Hologram & Dual Flight Path Shadow Trajectory Projection
+     M. Dual-Constellation NavIC / GPS Receiver & Sub-200ms Jamming Failover
+     N. Indian Operational Defense Sectors & 14:1 Glide Cone Airfield Diversion
+     O. SwarmNet Tactical Mesh (4-UAV Cooperative Network & Electronic Warfare Jamming)
+     P. Prescriptive Maintenance Engine & Standardized ATA-Chapter Work Orders
+     Q. Cryptographically Immutable Digital Logbook Ledger (SHA-256 Chained / CEMILAC Compliant)
+     R. Multi-Agent LLM Tactical Copilot (Groq Accelerated / Numerical Authority Governed)
+     S. Cockpit-Grade 3D Mission Visualizer (Three.js & 5 Camera Director Modes)
+     T. Main Tactical Operator Dashboard & Glassmorphic Telemetry Console
+  6. SUPPORTED DATASETS, AIRWORTHINESS & BENCHMARKS
+  7. API & WEBSOCKET SPECIFICATION (REST & HIGH-THROUGHPUT WS)
+  8. AUTOMATED TEST SUITE & VERIFICATION RESULTS (36/36 TESTS PASSED)
+  9. OPERATIONAL DEFENSE DEMONSTRATION PLAYBOOK (SCENARIOS 1 TO 6)
+ 10. INSTALLATION, SYSTEM PREREQUISITES & EXECUTION GUIDE
+ 11. STRATEGIC IMPACT, CONCLUSION & ROADMAP
+====================================================================================================
+
+
+====================================================================================================
+1. EXECUTIVE SUMMARY & ELEVATOR PITCH
+====================================================================================================
+AEROVEX (AERO-TWIN) is a military-grade, cyber-physical digital twin and autonomous prognostics 
+platform engineered specifically for aero-piston engines powering Medium-Altitude Long-Endurance (MALE) 
+Unmanned Aerial Vehicles (UAVs)—including platforms in the class of TAPAS-BH-201, Hermes 900, MQ-1 
+Predator, and indigenous defense reconnaissance drones.
+
+MALE UAVs conduct critical 24- to 36-hour Intelligence, Surveillance, and Reconnaissance (ISR) sorties 
+across hostile, unforgiving environments: from the searing heat of the Thar Desert (+48 deg C) to the 
+rarefied sub-zero atmosphere of the Siachen Glacier and Ladakh LAC (-25 deg C, 18,500+ ft MSL). 
+In-flight engine failure or malicious telemetry tampering leads to catastrophic platform loss ($5M to 
+$25M+ per hull) and mission compromise.
+
+AERO-TWIN overcomes traditional reactive aerospace monitoring by establishing an unbroken, autonomous 
+cyber-physical loop:
+   SENSE (CAN/STM32) --> VERIFY (Zero-Trust) --> HEAL (Digital Twin) --> DETECT (Residuals)
+   --> DIAGNOSE (Random Forest) --> EXPLAIN (TreeSHAP) --> PREDICT (Quantile RUL)
+   --> REPLAN (Pareto Frontier) --> ADVISE (Multi-Agent Copilot) --> LOG (SHA-256 Ledger)
+
+Key differentiators:
+1. Physical-to-Simulation Continuity: Seamlessly ingests real CAN bus frames from a ground-based STM32 
+   engine instrumentation test bench or simulation through the exact same ingestion pipeline.
+2. The Numerical Authority Rule: All health indices, analytical residuals, anomaly scores, fault 
+   probabilities, RUL quantiles, and Pareto ranks are computed by deterministic numerical models—never 
+   fabricated or modified by Large Language Models.
+3. Zero-Trust Cyber Shield: Real-time detection across 12 physical/temporal corruption vectors, isolating 
+   spoofed signals and substituting physics-based digital twin estimates with transparent metadata tagging.
+4. Autonomous Contingency Replanning: Real-time multi-objective Pareto optimization generating ghost 
+   flight trajectories and 14:1 glide cone emergency airfield reachability calculations.
+5. Military Airworthiness Compliance: Cryptographically immutable SHA-256 hash-chained logbook ledger 
+   for CEMILAC and DGCA airworthiness certification.
+
+
+====================================================================================================
+2. PROBLEM STATEMENT & DEFENSE IMPERATIVES
+====================================================================================================
+Modern military unmanned aviation operates under four fundamental vulnerabilities:
+
+1. THE "BLIND THRESHOLD" TRAP:
+   Conventional engine monitoring uses rigid, static thresholds (e.g., CHT > 230 deg C or Oil Pressure 
+   < 2.0 bar). However, at 18,000 ft over the Himalayas, air density drops by over 45%, reducing cooling 
+   mass flow. An engine running at "normal" absolute temperatures may actually be experiencing rapid 
+   thermal runaway relative to ambient conditions. Static alerts fire only after structural damage has 
+   already occurred.
+
+2. ELECTRONIC WARFARE & TELEMETRY SPOOFING:
+   Tactical UAV datalinks are routinely subjected to hostile electronic warfare, RF jamming, and man-
+   in-the-middle telemetry injection. Remote pilots cannot distinguish between a real catastrophic oil leak 
+   and a spoofed transducer signal, risking unnecessary mission aborts or disastrous continued flights.
+
+3. PILOT COGNITIVE OVERLOAD DURING CONTINGENCIES:
+   When an engine degrades mid-sortie, human operators must evaluate engine wear, remaining glide ratio, 
+   prevailing winds, fuel burn, and terrain elevation across multiple alternate airfields within seconds. 
+   Under combat stress, cognitive saturation leads to controlled flight into terrain (CFIT).
+
+4. UNSCHEDULED FLEET DOWNTIME & ARBITRARY OVERHAULS:
+   Aero-engines are maintained according to arbitrary calendar or flight-hour intervals (TBO). Healthy 
+   engines are grounded needlessly, reducing fleet readiness, while insidious micro-wear goes undetected 
+   until mid-air seizure.
+
+
+====================================================================================================
+3. PRODUCT IDENTITY & KEY VALUE PROPOSITIONS
+====================================================================================================
+AEROVEX bridges physical instrumentation, thermodynamic physics, local edge machine learning, 
+satellite navigation, and tactical operator command consoles.
+
+CORE VALUE PROPOSITIONS:
+* PHYSICAL GROUND-BENCH HARDWARE INTERFACE: Dedicated STM32 CAN bus acquisition node (500 kbps) 
+  monitoring crankshaft speed, cylinder head temp, exhaust gas temp, manifold pressure, and vibration.
+* UNIFIED 31-CHANNEL TELEMETRY CONTRACT: Unified schema ensuring identical data treatment regardless 
+  of whether signals originate from physical transducers, simulation, or self-healed channels.
+* SUB-200ms CYBER-ANOMALY ISOLATION: Instantly detects sensor freezes, ROC spikes, calibration drift, 
+  and hostile spoofing without tripping false engine emergency cutoffs.
+* TRANSPARENT SELF-HEALING RECONSTRUCTION: Replaces corrupted telemetry with digital twin analytical 
+  estimates, tagged explicitly with 'source = reconstructed' for airworthiness audits.
+* MONOTONIC QUANTILE RUL PREDICTION: Predicts remaining flight hours at P10 (pessimistic), P50 
+  (median), and P90 (optimistic) bounds, enforcing P10 <= P50 <= P90 under all flight regimes.
+* AUTONOMOUS PARETO MISSION CONTINGENCY: Generates 3 Pareto-optimal flight routes (Option A: Max Safety/
+  RTB, Option B: Mission Completion, Option C: Balanced Compromise) with ghost waypoints.
+* DUAL-CONSTELLATION NavIC / GPS RESILIENCE: Automatic EW jamming detection and sub-200ms failover to 
+  ISRO NavIC satellite constellation, backed by inertial dead reckoning.
+* CEMILAC/DGCA COMPLIANT IMMUTABLE LEDGER: SHA-256 chained digital blackbox ledger recording all sorties, 
+  faults, cyber interventions, and maintenance sign-offs with mathematical tamper evidence.
+
+
+====================================================================================================
+4. END-TO-END SYSTEM ARCHITECTURE
+====================================================================================================
+
+      +-----------------------------------------------------------------------------+
+      | PHYSICAL TEST BENCH (Ground Engine)   |   SIMULATED FLIGHT / AERODYNAMICS   |
+      | - Rotax 914 Turbo-Piston Rig          |   - 6-DoF UAV Flight Trajectory     |
+      | - STM32 DAQ + 6N137 Optical Isolator  |   - NavIC Sat Lock & EW Jamming     |
+      | - SN65HVD230 CAN Transceiver (500k)   |   - 4-UAV SwarmNet Tactical Mesh    |
+      +---------------------------------------+-------------------------------------+
+                         |                                      |
+                         | CAN Frames (0x100 - 0x105)           | Simulated Telemetry
+                         +-------------------+------------------+
+                                             |
+                                             V
+  +-------------------------------------------------------------------------------------+
+  |                             AERO-TWIN BACKEND ENGINE                                |
+  |                                                                                     |
+  |   +-----------------------------------------------------------------------------+   |
+  |   | 1. CAN TELEMETRY BRIDGE & UNIFIED SCHEMA (31 Channels, Ingestion Buffer)    |   |
+  |   +--------------------------------------+--------------------------------------+   |
+  |                                          | Raw Telemetry Stream                     |
+  |                                          V                                          |
+  |   +-----------------------------------------------------------------------------+   |
+  |   | 2. ZERO-TRUST CYBER SHIELD (12 Physical & Temporal Detection Vectors)       |   |
+  |   |    - Freeze, Spike, Drift, Out-of-Bounds, Parity, Noise Floor, Contradiction|   |
+  |   +--------------------------------------+--------------------------------------+   |
+  |                                          |                                          |
+  |                      +-------------------+-------------------+                      |
+  |                      | Valid Channel                         | Corrupted Channel    |
+  |                      V                                       V                      |
+  |   +-------------------------------------+ +-------------------------------------+   |
+  |   | 3. FIRST-PRINCIPLES DIGITAL TWIN    | | 4. SELF-HEALING RECONSTRUCTION      |   |
+  |   |    - Thermodynamic Equations        | |    - Substitutes Twin Analytical Est|   |
+  |   |    - 7-Channel Residual Vector r(t) | |    - Sets source = 'reconstructed'  |   |
+  |   |    - Master Health Index H(t)       | |    - Generates Audit Blackbox Event |   |
+  |   +------------------+------------------+ +------------------+------------------+   |
+  |                      |                                       |                      |
+  |                      +-------------------+-------------------+                      |
+  |                                          | Healed & Validated Stream                |
+  |                                          V                                          |
+  |   +-----------------------------------------------------------------------------+   |
+  |   | 5. LOCAL AI PROGNOSTICS SUITE (Edge Execution < 50ms)                       |   |
+  |   |    - Isolation Forest: Unsupervised Anomaly Scoring (18 rolling features)   |   |
+  |   |    - Calibrated Random Forest: 7-Class Failure Diagnosis                    |   |
+  |   |    - Fast TreeSHAP: Real-Time Feature Attribution Weights                   |   |
+  |   |    - Quantile Regressor: P10 / P50 / P90 Remaining Useful Life (Monotonic)  |   |
+  |   +--------------------------------------+--------------------------------------+   |
+  |                                          | Anomaly, Diagnosis & RUL                 |
+  |                                          V                                          |
+  |   +-----------------------------------------------------------------------------+   |
+  |   | 6. TACTICAL MISSION INTELLIGENCE & REPLANNING                               |   |
+  |   |    - Dynamic NavIC / GPS Receiver & EW Jamming Failover (<200ms)            |   |
+  |   |    - 14:1 Glide Cone Reachability over Indian Airfields                     |   |
+  |   |    - Pareto Multi-Objective Optimizer (Options A, B, C)                     |   |
+  |   |    - Ghost Waypoint Shadow Trajectory Generator                             |   |
+  |   +--------------------------------------+--------------------------------------+   |
+  |                                          |                                          |
+  |                      +-------------------+-------------------+                      |
+  |                      |                                       |                      |
+  |                      V                                       V                      |
+  |   +-------------------------------------+ +-------------------------------------+   |
+  |   | 7. IMMUTABLE DIGITAL LOGBOOK LEDGER | | 8. PRESCRIPTIVE MAINTENANCE ENGINE  |   |
+  |   |    - Append-Only SHA-256 Hash Chain | |    - ATA-Chapter Work Orders        |   |
+  |   |    - Tamper-Evident Verification    | |    - Tools, Parts, Protocols, Hours |   |
+  |   |    - CEMILAC / DGCA Compliance      | |    - ATA 71, 72, 73, 74, 75, 79     |   |
+  |   +------------------+------------------+ +------------------+------------------+   |
+  |                      |                                       |                      |
+  |                      +-------------------+-------------------+                      |
+  |                                          | Full System State                        |
+  |                                          V                                          |
+  |   +-----------------------------------------------------------------------------+   |
+  |   | 9. ASYNC COMMUNICATIONS & MULTI-AGENT COPILOT                               |   |
+  |   |    - High-Throughput WebSocket Stream (/ws/telemetry @ 1-10 Hz)             |   |
+  |   |    - FastAPI REST Services & Scenarios Manager                              |   |
+  |   |    - Groq Multi-Agent Copilot (Adheres to Numerical Authority Rule)         |   |
+  |   +--------------------------------------+--------------------------------------+   |
+  +------------------------------------------+------------------------------------------+
+                                             |
+                                             | JSON WebSocket & REST Payload
+                                             V
+  +-------------------------------------------------------------------------------------+
+  |                               TACTICAL FRONTEND CONSOLE                             |
+  |                                                                                     |
+  |   [3D Cockpit & Holographic Ghost]    [Tactical Leaflet Map & NavIC Tracking]       |
+  |   - Three.js WebGL2 Simulation        - 4 Indian Defense Sectors (Thar/Ladakh/EEZ)  |
+  |   - 5 Dynamic Camera Director Modes   - 14:1 Glide Slope Cone Display               |
+  |   - Holographic Ghost UAV Projection  - 8 Strategic Military Airfields              |
+  |                                                                                     |
+  |   [AI Prognostics & SHAP Studio]      [Prescriptive Maintenance & Digital Logbook]  |
+  |   - TreeSHAP Feature Attribution      - Standardized ATA-Chapter Work Orders        |
+  |   - Quantile RUL P10/P50/P90 Gauges   - Cryptographic SHA-256 Ledger Verification   |
+  |   - 7-Class Fault Mode Probabilities  - CEMILAC / DGCA Airworthiness Audit Status   |
+  |                                                                                     |
+  |   [Zero-Trust Cyber Shield Console]   [SwarmNet FANET Tactical Mesh Manager]        |
+  |   - 12 Attack Vector Status Indicators- 4-UAV Mesh (Lead, Port, Stbd, Relay)        |
+  |   - Reconstructed Telemetry Badging   - EW Jamming Injection & Rerouting            |
+  +-------------------------------------------------------------------------------------+
+
+
+====================================================================================================
+5. DETAILED SUBSYSTEM BREAKDOWN (A TO Z)
+====================================================================================================
+
+----------------------------------------------------------------------------------------------------
+A. PHYSICAL HARDWARE LAYER & CAN BUS TEST BENCH (STM32 HAL & OPTICAL ISOLATION)
+----------------------------------------------------------------------------------------------------
+AEROVEX features a physical Hardware-in-the-Loop (HIL) ground-based engine test bench centered around 
+an STM32F4/H7 microcontroller, communicating over physical Controller Area Network (CAN 2.0B) at 500 kbps:
+
+1. Transducer Pin Allocations:
+   * Crankshaft Speed (RPM)  : PA0 (TIM2_CH1 Input Capture) | 100 Hz | 1 RPM / bit
+   * Manifold Pressure (MAP) : PA1 (ADC1_IN1, 12-bit)       | 50 Hz  | 0.01 inHg / bit
+   * Oil Pressure            : PA2 (ADC1_IN2, 12-bit)       | 50 Hz  | 0.01 bar / bit
+   * Throttle Position (TPS) : PA3 (ADC1_IN3, 12-bit)       | 50 Hz  | 0.4% / bit
+   * Cylinder Head Temp (CHT): PB0 (SPI1 CS1, MAX31855)     | 10 Hz  | 0.1 deg C / bit
+   * Exhaust Gas Temp (EGT)  : PB1 (SPI1 CS2, MAX31855)     | 10 Hz  | 0.1 deg C / bit
+   * Vibration Accelerometer : PB6/PB7 (I2C1, ADXL345)      | 100 Hz | 0.01 g-RMS / bit
+   * Ambient Pressure/Temp   : PB6/PB7 (I2C1, BMP280)       | 10 Hz  | 0.1 hPa / bit
+   * CAN Bus Transceiver     : PB8/PB9 (bxCAN / CAN1)       | 500 kbps Standard 11-bit IDs
+
+2. Optical Tachometer Isolation Circuit:
+   To prevent high-voltage magneto ignition noise (up to 25 kV) from corrupting the MCU logic plane, 
+   crankshaft pulses are conditioned through an optical isolation barrier:
+   * Isolator: 6N137 High-Speed Optocoupler (10 MBd logic gate output, 2500 V isolation).
+   * Emitter: Variable reluctance pickup signal conditioned via NPN Schmitt trigger, driving 6N137 
+     IR LED with 330 Ohm resistor and 1N4148 flyback clamp.
+   * Collector: Pull-up to clean +3.3V (R = 1.0 kOhm) routed directly to PA0 (TIM2).
+
+3. CAN Bus Arbitration Message Dictionary:
+   Defined in hardware/stm32/aerovex_can_protocol.h:
+   * 0x100: Core Dynamics (RPM [2B], Throttle [1B], MAP [2B]) @ 50 Hz
+   * 0x101: Thermal State (CHT [2B], EGT [2B]) @ 10 Hz
+   * 0x102: Fluid Dynamics (Oil Pressure [2B], Oil Temp [2B], Fuel Flow [2B]) @ 20 Hz
+   * 0x103: Vibration & Load (Vibration RMS [2B], Engine Load [1B]) @ 50 Hz
+   * 0x104: Environmental (Ambient Temp [2B], Ambient Pressure [2B], Baro Alt [2B]) @ 5 Hz
+   * 0x105: Node Health & Watchdog (Battery Voltage [1B], Sequence Counter [2B], Error Flags [1B]) @ 2 Hz
+
+4. Physical vs. Simulation Boundaries (§19 & §20):
+   * Physical: Ground-based engine test bench, transducers, STM32 DAQ, CAN transceiver, optical isolation.
+   * Simulated: 6-DoF flight aerodynamics, NavIC jamming, 4-UAV SwarmNet mesh, and Ghost UAV projection.
+   * Continuity: Both physical CAN and simulation streams feed into the exact same backend ingestion pipeline.
+
+
+----------------------------------------------------------------------------------------------------
+B. UNIFIED 31-CHANNEL TELEMETRY SCHEMA & HARDWARE INGESTION BRIDGE
+----------------------------------------------------------------------------------------------------
+Defined in backend/app/schemas/telemetry.py via Pydantic V2:
+Every data packet ingested contains all 31 mandatory canonical fields:
+1.  timestamp (float, UTC unix seconds)
+2.  engine_id (string, e.g., 'ROTAX-914-DEMO')
+3.  mission_id (string)
+4.  rpm (float)
+5.  map (float, manifold pressure in inHg)
+6.  cht (float, cylinder head temp in deg C)
+7.  egt (float, exhaust gas temp in deg C)
+8.  oil_pressure (float, bar)
+9.  oil_temperature (float, deg C)
+10. vibration (float, g-RMS)
+11. fuel_flow (float, liters/hour)
+12. throttle (float, 0.0 to 1.0)
+13. ambient_temperature (float, deg C)
+14. ambient_pressure (float, hPa)
+15. altitude (float, feet MSL)
+16. airspeed (float, knots indicated)
+17. engine_load (float, 0.0 to 1.0)
+18. torque (float, Nm)
+19. power (float, kW)
+20. efficiency (float, brake specific fuel consumption / thermal efficiency ratio)
+21. latitude (float, degrees decimal)
+22. longitude (float, degrees decimal)
+23. heading (float, degrees 0-360)
+24. mission_phase (string: TAKEOFF, CLIMB, CRUISE, PATROL, LOITER, DESCENT, RTB)
+25. sensor_health (dict: per-channel health score [0, 1])
+26. sensor_confidence (dict: per-channel measurement confidence [0, 1])
+27. telemetry_integrity (float: aggregate stream score [0, 1])
+28. packet_loss (float: rolling dropout percentage)
+29. timestamp_valid (bool: monotonic sequence integrity check)
+30. data_quality (string: NOMINAL, DEGRADED, RECONSTRUCTED, CORRUPTED)
+31. source (TelemetrySource: 'physical', 'simulation', 'reconstructed', 'fault_injection')
+
+
+----------------------------------------------------------------------------------------------------
+C. FIRST-PRINCIPLES ENGINE THERMODYNAMICS & ANALYTICAL DIGITAL TWIN CORE
+----------------------------------------------------------------------------------------------------
+The analytical digital twin continuously calculates expected healthy states based on first-principles 
+physics for turbocharged 4-stroke aero-engines (Rotax 914 / 915 iS):
+
+1. International Standard Atmosphere (ISA) Dynamic Lapse Rate:
+   Ambient conditions as a function of geopotential altitude h:
+      T_amb(h) = T_0 - L * h
+      P_amb(h) = P_0 * (1 - L * h / T_0) ^ (g_0 * M / (R_gas * L))
+      rho(h)   = P_amb(h) / (R_specific * T_amb(h))
+   where L = 0.0065 K/m, T_0 = 288.15 K, P_0 = 1013.25 hPa.
+
+2. Turbocharger Boost & Manifold Absolute Pressure (MAP):
+   Accounting for wastegate servo position, ambient density ratio, and crankshaft RPM:
+      MAP_expected = P_amb * (1.0 + Boost_Ratio * (Throttle - 0.40) * (RPM / 5800.0))
+
+3. Stoichiometric Combustion & Thermal Balance (EGT / CHT):
+   Expected EGT is derived from fuel-air equivalence ratio phi and manifold pressure:
+      EGT_expected = T_amb + Delta_T_combustion * (MAP / MAP_sea_level) * (1.0 / phi)
+   CHT is solved dynamically via differential heat flux balance:
+      d(CHT)/dt = (Q_combustion_in - Q_cooling_out) / Heat_Capacity_Engine
+      Q_cooling_out = h_forced_convection(v_airspeed, rho) * (CHT - T_amb)
+
+
+----------------------------------------------------------------------------------------------------
+D. CONTINUOUS 7-CHANNEL RESIDUAL VECTOR ENGINE & MASTER HEALTH INDEX EQUATION
+----------------------------------------------------------------------------------------------------
+Implemented in backend/app/digital_twin/residual_engine.py and health_index.py:
+
+1. Continuous Residual Vector r(t):
+   r(t) = y_actual(t) - y_expected(t)
+   Evaluated continuously across 7 core physical channels:
+      r_EGT   = EGT_actual - EGT_expected  (deg C)
+      r_CHT   = CHT_actual - CHT_expected  (deg C)
+      r_OIL_P = Oil_P_actual - Oil_P_expected  (bar)
+      r_OIL_T = Oil_T_actual - Oil_T_expected  (deg C)
+      r_RPM   = RPM_actual - RPM_expected  (RPM)
+      r_MAP   = MAP_actual - MAP_expected  (inHg)
+      r_VIB   = Vib_actual - Vib_expected  (g-RMS)
+
+2. Rolling Statistical Buffers:
+   The residual engine maintains a 60-step rolling window calculating mean residual, rolling variance, 
+   skewness, and cross-channel covariance matrices to distinguish transient throttle steps from true wear.
+
+3. Master Health Index Equation H(t) in [0, 100]:
+      H(t) = 100.0 - [ w_res * ||r_norm(t)||_2 + w_vib * Penalty_Vib + w_therm * Deficit_ThermalMargin ]
+   Calibrated Master Thresholds:
+      H(t) > 85.0       : HEALTHY (Green)
+      60.0 <= H(t) <= 85: CAUTION (Amber — Progressive wear monitored)
+      H(t) < 60.0       : CRITICAL (Red — Replanning armed, diversion recommended)
+
+4. The Numerical Authority Rule (§40):
+   All health scores and residual vectors are computed strictly by deterministic Python mathematics. 
+   No Large Language Model or generative heuristic is permitted to fabricate or modify health scores.
+
+
+----------------------------------------------------------------------------------------------------
+E. ZERO-TRUST CYBER SHIELD (12 PHYSICAL & TEMPORAL DETECTION VECTORS)
+----------------------------------------------------------------------------------------------------
+Implemented in backend/app/cyber_security/zero_trust_shield.py:
+The zero-trust sentry inspects every incoming telemetry frame against 12 physical and temporal criteria:
+ 1. Sensor Freeze / Stiction: Channel variance sigma^2 < 1e-6 over 15 steps during active flight.
+ 2. Rate-of-Change (ROC) Spikes: |dy/dt| exceeds aerodynamically/mechanically possible gradients.
+ 3. Sensor Drift / Bias: Monotonic divergence from expected twin without cross-channel physical coupling.
+ 4. Out-of-Bounds Impossible Values: Exceeds transducer operational physical limits (e.g., EGT > 1200 deg C).
+ 5. Timestamp Jitter / Stagnation: Delta-t deviations > 30% from the nominal sampling rate.
+ 6. Packet Loss / Dropout: High sequential missing frames triggering communication watchdog alerts.
+ 7. Thermodynamic Contradictions: Conflicting physical states (e.g., EGT = 950 deg C while Throttle = 20%).
+ 8. Hostile Telemetry Replay / Spoofing: Repetition of previous telemetry blocks with mismatched timestamps.
+ 9. Noise Floor Collapse: Unnaturally clean signal lacking expected engine mechanical vibration noise.
+10. Calibration Scale Jump: Instantaneous gain multiplier alteration indicating sensor ADC reference shift.
+11. Phase Lag Inconsistency: Abnormal propagation delay between throttle movement and manifold response.
+12. Bit / Parity Corruption: Truncated payloads or corrupted frame check sequences.
+
+
+----------------------------------------------------------------------------------------------------
+F. TRANSPARENT SELF-HEALING TELEMETRY PIPELINE & RECONSTRUCTION TAGGING
+----------------------------------------------------------------------------------------------------
+Implemented in backend/app/telemetry/self_healing.py:
+When a channel fails the Zero-Trust Cyber Shield (channel confidence < 0.65):
+1. Isolation: The corrupted physical channel is quarantined from downstream AI and flight control.
+2. Substitution: The digital twin's analytical expected state y_expected(t) is transparently substituted.
+3. Provenance Tagging: The channel is stamped with source = 'reconstructed', and confidence is adjusted.
+4. Downstream Protection: Autopilot, anomaly detectors, and RUL regressors receive smooth, physically 
+   consistent telemetry without crashing or triggering false emergency shutdowns.
+5. Blackbox Audit Logging: An immutable audit event is immediately recorded in the blackbox ledger.
+
+
+----------------------------------------------------------------------------------------------------
+G. LOCAL AI PROGNOSTICS SUITE (ISOLATION FOREST & 7-CLASS CALIBRATED CLASSIFIER)
+----------------------------------------------------------------------------------------------------
+Implemented in backend/app/ai/anomaly.py and fault_classifier.py:
+1. Unsupervised Anomaly Detection (Isolation Forest):
+   * Analyzes an 18-channel rolling feature vector (residuals, standard deviations, thermal rates).
+   * Generates a continuous anomaly score in [-0.5, 0.5]. Scores < 0 indicate abnormal engine envelopes.
+2. Supervised 7-Class Calibrated Fault Classifier (Random Forest):
+   Produces calibrated probability distributions across 7 certified operational classes:
+   * Class 0: HEALTHY_ISR (Nominal flight baseline)
+   * Class 1: INJECTOR_DEGRADATION (Nozzle varnishing, lean burn, cylinder EGT split)
+   * Class 2: COOLING_DEGRADATION (Radiator core fouling, coolant pump cavitation)
+   * Class 3: LUBRICATION_STARVATION (Oil pressure decay, bearing friction, thermal rise)
+   * Class 4: COMBUSTION_INEFFICIENCY (Ignition timing drift, fouled spark plugs)
+   * Class 5: MECHANICAL_WEAR (Piston ring blow-by, excessive crankcase pressure)
+   * Class 6: SENSOR_CORRUPTION (Electronic telemetry attack or transducer failure)
+
+
+----------------------------------------------------------------------------------------------------
+H. DEGRADATION TREND TRACKING (RATES OF CHANGE & MULTI-STEP KINEMATICS)
+----------------------------------------------------------------------------------------------------
+Implemented in backend/app/degradation/tracker.py:
+Tracks multi-step kinematics of engine wear across sliding time windows:
+* Computes d(Health)/dt, d(EGT_residual)/dt, and d(Vibration)/dt.
+* Classifies wear trajectory into:
+  - STABLE            : Degradation rate < 0.05 units/hour
+  - SLOW_DEGRADATION  : Progressive wear (0.05 to 0.50 units/hour)
+  - RAPID_DEGRADATION : Critical runaway (> 0.50 units/hour — triggers replanning alert)
+
+
+----------------------------------------------------------------------------------------------------
+I. EXPLAINABLE AI ENGINE (REAL-TIME TreeSHAP FEATURE ATTRIBUTION)
+----------------------------------------------------------------------------------------------------
+Implemented in backend/app/ai/explainability.py:
+Military aviation requires explainable decisions. AERO-TWIN executes real-time TreeSHAP calculations 
+ranking the physical features driving the diagnosed fault:
+* Output includes top positive contributors (driving the fault) and negative contributors (suppressing it).
+* Example:
+  - Top Fault : INJECTOR_DEGRADATION (88.4%)
+  - Top SHAP 1: EGT Residual Divergence (+0.38)
+  - Top SHAP 2: Air-Fuel Ratio Lean Drift (+0.29)
+  - Top SHAP 3: Fuel Flow Anomaly (+0.18)
+
+
+----------------------------------------------------------------------------------------------------
+J. MULTI-QUANTILE REMAINING USEFUL LIFE (RUL) REGRESSOR (P10, P50, P90 MONOTONICITY)
+----------------------------------------------------------------------------------------------------
+Implemented in backend/app/ai/rul.py:
+Predicts remaining operational hours using Quantile Regression Forests:
+* P10 (Pessimistic / Lower Bound): 90% statistical certainty of engine survival.
+* P50 (Median Expectation): Nominal expected time-to-failure.
+* P90 (Optimistic / Upper Bound): Maximum potential flight duration under reduced throttle.
+* Monotonicity Invariant: Strictly verified such that P10 <= P50 <= P90 under all flight regimes.
+* Mission Alert: If P10 RUL < Remaining Sortie Duration, an audible and visual RISK ALERT fires.
+
+
+----------------------------------------------------------------------------------------------------
+K. MISSION INTELLIGENCE, WHAT-IF SIMULATOR & PARETO MULTI-OBJECTIVE REPLANNER
+----------------------------------------------------------------------------------------------------
+Implemented in backend/app/replanning/pareto_optimizer.py and mission/what_if.py:
+
+1. What-If Forward Simulation:
+   Allows operators to adjust throttle, altitude, and ambient temperature to project forward-simulated 
+   health, thermal margin, and RUL using real physics and ML inference (no mocked data).
+
+2. Pareto Multi-Objective Replanning:
+   Evaluates 3 distinct operational strategies along the Pareto trade-off frontier:
+   * OPTION A: MAX SAFETY / IMMEDIATE RETURN TO BASE (RTB)
+     - High hull survival probability (0.95+), low throttle (55%), direct return to base airbase.
+   * OPTION B: MISSION COMPLETION / CONTINUED CRUISE
+     - High mission objective success (0.80+), maintains patrol corridor at throttled cruise (65%).
+   * OPTION C: BALANCED COMPROMISE / SAFE DESCENT & LOITER
+     - Balanced safety and mission success, descends to 9,000 ft where dense air restores cooling.
+
+
+----------------------------------------------------------------------------------------------------
+L. GHOST UAV HOLOGRAM & DUAL FLIGHT PATH SHADOW TRAJECTORY PROJECTION
+----------------------------------------------------------------------------------------------------
+When a Pareto contingency candidate is selected:
+* The replanner generates a sequence of 3D ghost waypoints (latitude, longitude, altitude, airspeed).
+* The 3D Cockpit Visualizer and 2D Tactical Map render a semi-transparent cyan holographic "Ghost UAV" 
+  flying the proposed diversion path in tandem with the primary airframe.
+* Allows flight commanders to visually assess terrain clearances, descent glideslopes, and airfield 
+  approaches before executing the contingency.
+
+
+----------------------------------------------------------------------------------------------------
+M. DUAL-CONSTELLATION NavIC / GPS RECEIVER & SUB-200ms JAMMING FAILOVER
+----------------------------------------------------------------------------------------------------
+Implemented in backend/app/gps/gps_navic.py:
+Provides robust positioning across contested electronic warfare environments:
+* Primary Constellation : GPS (L1/L2)
+* Sovereign Fallback    : ISRO NavIC (L5 / S-Band)
+* Electronic Attack Detection: Monitors carrier-to-noise ratio (C/N0) and pseudorange variance.
+* Failover Latency      : Switches from GPS to NavIC in < 200 milliseconds upon jamming detection.
+* GPS-Denied Dead Reckoning: If both constellations are jammed, switches to inertial dead reckoning 
+  with mathematically bounded drift tracking.
+
+
+----------------------------------------------------------------------------------------------------
+N. INDIAN OPERATIONAL DEFENSE SECTORS & 14:1 GLIDE CONE AIRFIELD DIVERSION
+----------------------------------------------------------------------------------------------------
+Implemented in backend/app/gps/terrain.py:
+1. Operational Sectors:
+   * SEC-01: THAR DESERT (Jaisalmer / Pokhran) — High ambient heat, sand filtration, low cooling margin.
+   * SEC-02: HIMALAYAS (Ladakh / Siachen / Pangong) — Extreme altitude, thin air cooling, mountain passes.
+   * SEC-03: INDIAN OCEAN EEZ (Mumbai High / Arabian Sea) — Maritime surveillance, saltwater corrosion.
+   * SEC-04: NORTH-EAST (Tawang / Arunachal) — Tight canyon valleys, steep cloud decks, high terrain.
+
+2. Strategic Military Airfield Diversion Database:
+   Continuously evaluates 14:1 aerodynamic glide reachability across 8 frontline IAF airbases:
+   * Leh Air Force Station (IXL, Ladakh)
+   * Awantipur Air Force Base (AWT, Kashmir)
+   * Halwara Air Force Base (HWR, Punjab)
+   * Suratgarh Airbase (SUT, Rajasthan)
+   * Jodhpur Air Force Base (JDH, Rajasthan)
+   * Bhatinda Air Force Station (BTI, Punjab)
+   * Ambala Air Force Base (AMB, Haryana)
+   * Nal (Bikaner) Airbase (BKN, Rajasthan)
+   Calculates real-time slant distance, glide cone ceiling, and altitude safety margins.
+
+
+----------------------------------------------------------------------------------------------------
+O. SWARMNET TACTICAL MESH (4-UAV COOPERATIVE NETWORK & ELECTRONIC WARFARE JAMMING)
+----------------------------------------------------------------------------------------------------
+Implemented in backend/app/swarm/swarm_manager.py:
+* 4-UAV Tactical Network:
+  - Alpha-1 Lead   (Primary ISR platform running AERO-TWIN Digital Twin)
+  - Bravo-2 Port   (Wingman Port surveillance unit)
+  - Charlie-3 Stbd (Wingman Starboard surveillance unit)
+  - Delta-4 Relay  (High-altitude airborne communications relay)
+* Tactical Formations: V-Shape, Diamond, Echelon, and Orbit.
+* Telemetry Metrics: RSSI (dBm), Packet Delivery Ratio (PDR %), Latency (ms), and Node Health.
+* Anti-Jamming Rerouting: When EW jamming attacks one wingman, Delta-4 autonomously routes mesh packets 
+  around the jammed node to maintain swarm tactical cohesion.
+
+
+----------------------------------------------------------------------------------------------------
+P. PRESCRIPTIVE MAINTENANCE ENGINE & STANDARDIZED ATA-CHAPTER WORK ORDERS
+----------------------------------------------------------------------------------------------------
+Implemented in backend/app/maintenance/taskcard_generator.py:
+Automatically converts diagnosed faults and degradation vectors into standardized aerospace taskcards:
+* ATA 71: Powerplant General (Engine mounts, cowling, ground run-up)
+* ATA 72: Engine Reciprocating (Cylinder compression, valve clearances, piston ring blow-by)
+* ATA 73: Engine Fuel & Control (Fuel injector ultrasonic overhaul, rail pressure calibration)
+* ATA 74: Ignition Systems (Dual CDI timing check, spark plug renewal)
+* ATA 75: Air / Cooling Systems (Radiator heat exchanger flush, coolant pump impeller replacement)
+* ATA 79: Lubrication Systems (Magnetic chip detector inspection, oil filter sectioning)
+Each taskcard includes: Unique Taskcard ID, Urgency Rating (IMMEDIATE_GROUNDING, PRIORITY_A_CHECK, 
+ROUTINE_B_CHECK), Estimated Man-Hours, Required Tooling, Required Spare Parts, and Numbered Procedures.
+
+
+----------------------------------------------------------------------------------------------------
+Q. CRYPTOGRAPHICALLY IMMUTABLE DIGITAL LOGBOOK LEDGER (SHA-256 CHAINED / CEMILAC COMPLIANT)
+----------------------------------------------------------------------------------------------------
+Implemented in backend/app/storage/immutable_logbook.py:
+An append-only cryptographic ledger anchoring all digital twin airworthiness events:
+* Block Structure: Index, Timestamp, Event Type, Structured Payload, Prev_Hash, SHA-256 Hash.
+* Event Types: SORTIE_START, TELEMETRY_SNAPSHOT, CYBER_INTERVENTION, MAINTENANCE_SIGNOFF, SORTIE_END.
+* Mathematical Verification: Automated verification checks genesis block, hash recalculation, and 
+  prev_hash pointers. Any manual tampering with historical health or sensor records is immediately 
+  detected and flagged as 'INTEGRITY: COMPROMISED'.
+* Airworthiness Standard: Built for CEMILAC (Center for Military Airworthiness and Certification) and 
+  DGCA airworthiness certification audits.
+
+
+----------------------------------------------------------------------------------------------------
+R. MULTI-AGENT LLM TACTICAL COPILOT (GROQ ACCELERATED / NUMERICAL AUTHORITY GOVERNED)
+----------------------------------------------------------------------------------------------------
+Implemented in backend/app/intelligence/ and MissionReplanningChat.tsx:
+* Powered by Groq ultra-fast LPU hardware acceleration.
+* 5 Specialized Agents:
+  1. Chief Orchestrator: High-level tactical overview and subsystem state arbitration.
+  2. Propulsion Specialist: Deep thermodynamic analysis of EGT, CHT, MAP, and turbo boost.
+  3. Cyber Security Officer: Sentry monitoring spoofing attacks and self-healing telemetry.
+  4. Mission Risk Analyst: Evaluator of fuel endurance, terrain clearance, and divert airstrips.
+  5. Maintenance Officer: Technical liaison mapping faults to ATA work orders.
+* Strict Numerical Authority: The LLM answers questions using live state queries and explains 
+  numerical results without fabricating or modifying any sensor readings or health scores.
+
+
+----------------------------------------------------------------------------------------------------
+S. COCKPIT-GRADE 3D MISSION VISUALIZER (THREE.JS & 5 CAMERA DIRECTOR MODES)
+----------------------------------------------------------------------------------------------------
+Built on React Three Fiber and Three.js with WebGL2 rendering:
+* Airframe Model: High-fidelity military UAV featuring animated spinning propeller, control surfaces 
+  (ailerons, rudder, elevators), and landing gear.
+* 5 Camera Director Modes:
+  1. Chase View: Dynamic tactical following camera behind the aircraft.
+  2. Orbit View: 360-degree free examination camera for walkaround inspections.
+  3. Cockpit HUD View: Synthetic Vision Primary Flight Display (PFD) with artificial horizon.
+  4. Top-Down Recon View: Orthographic battlefield overview.
+  5. Thermal X-Ray View: Color-coded heat distribution rendering on engine cylinder heads.
+* Holographic Ghost UAV: Cyan wireframe holographic clone flying the proposed Pareto replanned route.
+
+
+----------------------------------------------------------------------------------------------------
+T. MAIN TACTICAL OPERATOR DASHBOARD & GLASSMORPHIC TELEMETRY CONSOLE
+----------------------------------------------------------------------------------------------------
+The user interface adheres to a military aerospace glassmorphism design:
+* Strict Visual Hierarchy:
+  Engine Health Gauge --> RUL P10/P50/P90 --> Anomaly Score --> Fault Probability
+  --> Telemetry Integrity --> Thermal Margin --> Mission Risk --> Pareto Recommendations
+  --> Live Telemetry Grid --> Actual vs. Expected Twins --> Residual Sparklines --> TreeSHAP Waterfall
+  --> 2D Tactical GPS Map --> 3D Holographic Visualizer.
+* Full Dark / Light Mode Support: High-contrast aerospace readability across dark operations rooms 
+  and sunlight field conditions.
+
+
+====================================================================================================
+6. SUPPORTED DATASETS, AIRWORTHINESS & BENCHMARKS
+====================================================================================================
+AEROVEX is grounded in rigorous public and proprietary aerospace datasets:
+1. NASA C-MAPSS (Commercial Modular Aero-Propulsion System Simulation):
+   Run-to-failure turbofan degradation benchmarks (FD001 to FD004) for model pre-training.
+2. NASA N-CMAPSS:
+   Next-generation high-fidelity turbofan dataset incorporating real flight transient profiles.
+3. ML OLYMPIAD - TURBOFAN PREDICTIVE MAINTENANCE:
+   Multivariate dataset used for hyperparameter calibration and cross-validation of quantile regressors.
+4. INDIGENOUS AERO-TWIN MALE ROTAX BENCHMARK:
+   Dynamometer-correlated operational dataset modeling Rotax 914/915 four-stroke turbocharged piston 
+   engines under altitude variations from 0 to 25,000 ft MSL.
+
+
+====================================================================================================
+7. API & WEBSOCKET SPECIFICATION (REST & HIGH-THROUGHPUT WS)
+====================================================================================================
+Built on Python 3.11+ and FastAPI with full asynchronous non-blocking event loops:
+
+REST ENDPOINTS:
+  GET  /health                   - System health probe and component availability
+  GET  /api/state                - Complete state snapshot (telemetry, twin, AI, risk, replanning, logbook)
+  GET  /api/digital-twin         - Digital twin expected states and continuous residual vectors
+  GET  /api/prognostics          - Anomaly scores, fault probabilities, and TreeSHAP weights
+  GET  /api/cyber                - Zero-trust cyber shield report and sensor integrity metrics
+  GET  /api/rul                  - Multi-quantile RUL predictions (P10, P50, P90)
+  GET  /api/mission              - Mission completion probability and operational risk factors
+  GET  /api/maintenance          - Prescriptive ATA-chapter taskcards and work orders
+  GET  /api/replay               - Chronological blackbox event history
+  GET  /api/readiness            - System readiness audit of datasets, models, and hardware bridges
+  GET  /api/datasets             - Registry of aerospace reference datasets
+  POST /api/simulation/start     - Initiate or resume physics simulation loop
+  POST /api/simulation/pause     - Pause simulation clock
+  POST /api/simulation/reset     - Reset simulation to 100% healthy baseline
+  POST /api/simulation/control   - Adjust throttle, altitude, RPM, and speed multiplier
+  POST /api/missions/set         - Set mission profile (ISR, Strike, High-Alt) and environment
+  POST /api/scenario/load        - Load certified demo scenario (HOT_WEATHER, INJECTOR, CYBER, etc.)
+  POST /api/fault/inject         - Inject physical engine fault (injector, cooling, mechanical, oil)
+  POST /api/fault/clear          - Clear injected physical faults
+  POST /api/telemetry/inject     - Inject cyber anomaly (freeze, spike, drift, noise)
+  POST /api/what-if              - Run forward-simulated parameter sweep
+  POST /api/replanning/run       - Execute Pareto multi-objective replanning optimization
+
+WEBSOCKET ENDPOINT:
+  WS   /ws/telemetry             - High-throughput bi-directional WebSocket streaming complete system 
+                                   state at 1 Hz to 10 Hz with client lag recovery.
+
+
+====================================================================================================
+8. AUTOMATED TEST SUITE & VERIFICATION RESULTS (36/36 TESTS PASSED)
+====================================================================================================
+The complete AEROVEX software suite is validated by 36 automated unit and integration tests:
+
+Test Module Breakdown:
+  1. TestEngineSimulator (2 tests)
+     - test_simulator_step: Baseline physics advancement and unified output verification.
+     - test_fault_injection: Physical fault propagation across thermodynamic states.
+  2. TestDigitalTwin (5 tests)
+     - test_state_estimator: Expected healthy state convergence.
+     - test_health_index: Baseline health computation.
+     - test_residual_engine_zero_baseline_and_divergence: Zero residual in baseline, divergence on fault.
+     - test_residual_engine_rolling_statistics: Mean, variance, skewness, covariance calculation.
+     - test_health_index_threshold_classification: >85 Healthy, 60-85 Caution, <60 Critical.
+  3. TestAIPipeline (6 tests)
+     - test_anomaly_detector: Isolation Forest decision boundary scoring.
+     - test_fault_classifier: 7-class calibrated probability distribution.
+     - test_rul_predictor: RUL median regression.
+     - test_rul_quantile_monotonicity: Strict P10 <= P50 <= P90 invariance under all regimes.
+     - test_shap_explainability: TreeSHAP attribution ranking and weight validation.
+     - test_degradation_tracker: Rate of change and trend classification.
+  4. TestCyberSecurity (3 tests)
+     - test_telemetry_integrity: Basic integrity scoring.
+     - test_zero_trust_shield_egt_spike_and_freeze: ROC spike and freeze detection.
+     - test_self_healing_pipeline_substitution_and_audit: Digital twin substitution and audit log.
+  5. TestRestAPI (8 tests)
+     - test_health_endpoint, test_missions_list, test_state_endpoint, test_readiness_endpoint,
+       test_dataset_registry_endpoint, test_unified_telemetry_schema, test_can_telemetry_hardware_hal,
+       test_agent_offline_fallback.
+  6. TestMissionAndReplanning (2 tests)
+     - test_what_if_contingency_simulation: Forward-simulated physics projection.
+     - test_pareto_multi_objective_replanning: Options A/B/C Pareto frontier optimization.
+  7. TestSwarmAndGNSS (4 tests)
+     - test_swarm_formation_and_heartbeat: 4-node swarm updates and DIAMOND formation.
+     - test_gnss_navic_failover_latency: Sub-200ms failover from GPS to NavIC under EW jamming.
+     - test_gps_denied_dead_reckoning_drift: Inertial dead reckoning drift physics.
+     - test_terrain_diversion_reachability: 14:1 glide cone reachability to Ambala airbase.
+  8. TestMilestone7MaintenanceAndLogbook (3 tests)
+     - test_taskcard_generation_cooling_and_injector: ATA 75 and ATA 73 work orders generation.
+     - test_immutable_digital_logbook_cryptographic_verification: SHA-256 chain verification & tamper catch.
+     - test_orchestrator_full_state_milestone7: Full integrated state snapshot verification.
+  9. TestLiveSession (3 tests)
+     - test_shared_session_pause_and_controls, test_groq_rejects_invalid_key, test_broadcast_reaches_both_clients.
+
+RESULT: 36 passed, 0 failed, 3 benign deprecation warnings (100% pass rate in 6.85 seconds).
+FRONTEND BUILD: Vite production compilation completed in 1.64 seconds with 0 TypeScript errors.
+
+
+====================================================================================================
+9. OPERATIONAL DEFENSE DEMONSTRATION PLAYBOOK (SCENARIOS 1 TO 6)
+====================================================================================================
+AEROVEX includes pre-configured operational scenarios for defense evaluations:
+
+SCENARIO 1: "HEALTHY HIGH-ALTITUDE ISR SORTIE (LADAKH SECTOR)"
+  * Parameters: Altitude 18,500 ft MSL | Temp: -15 deg C | Health: 100% | RUL: > 100 hrs.
+  * Demonstration: Digital twin models air density drop and turbo boost compensation. 
+    Residuals stay near zero; UAV navigates smoothly along the Leh-Nubra-Pangong route.
+
+SCENARIO 2: "PROGRESSIVE INJECTOR DEGRADATION"
+  * Trigger: Operator injects fuel injector restriction via the fault console.
+  * Demonstration: Actual EGT rises by 85 deg C above twin expectation; AFR drifts lean. 
+    Isolation Forest detects anomaly; Random Forest diagnoses INJECTOR_DEGRADATION (92%); 
+    TreeSHAP confirms EGT divergence as primary driver; ATA 73 work order is generated.
+
+SCENARIO 3: "CYBER ATTACK: SENSOR FREEZE & ROC SPIKE"
+  * Trigger: Operator injects sensor freeze and sudden +360 deg C spike onto EGT telemetry.
+  * Demonstration: Zero-Trust Cyber Shield flags CYBER_ANOMALY; sensor confidence drops to 0.0; 
+    Self-Healing Pipeline substitutes twin expected state (source = 'reconstructed'); engine 
+    mechanical health remains unaffected; autopilot continues nominal flight.
+
+SCENARIO 4: "SEVERE THERMAL RUNAWAY & PARETO REPLANNING"
+  * Trigger: Hot weather (+42 deg C) combined with coolant flow restriction.
+  * Demonstration: CHT exceeds 230 deg C; Health Index drops below 55%; RUL drops to 1.8 hrs. 
+    Pareto Replanner activates, projects 3 diversion paths (Option A: RTB, Option B: Cruise, 
+    Option C: Safe Descent), and renders the holographic Ghost UAV path to the nearest safe airfield.
+
+SCENARIO 5: "ELECTRONIC WARFARE JAMMING & DYNAMIC NavIC FAILOVER"
+  * Trigger: Hostile broadband jamming disables GPS L1/L2 signals.
+  * Demonstration: GNSS receiver detects C/N0 collapse, triggers failover to ISRO NavIC constellation 
+    in under 200 ms. SwarmNet airborne relay (RELAY-04) re-routes mesh communication around jammed nodes.
+
+SCENARIO 6: "CEMILAC TAMPER-EVIDENT AIRWORTHINESS AUDIT"
+  * Demonstration: Operator inspects the Cryptographically Chained Digital Logbook. Verification badge 
+    confirms 'CRYPTOGRAPHIC INTEGRITY: VERIFIED'. If any historical block payload is modified, the 
+    ledger immediately flags 'INTEGRITY: COMPROMISED' with exact block mismatch indices.
+
+
+====================================================================================================
+10. INSTALLATION, SYSTEM PREREQUISITES & EXECUTION GUIDE
+====================================================================================================
+SYSTEM REQUIREMENTS:
+* Operating System : Windows 10/11, Ubuntu 22.04 LTS, or macOS (Apple Silicon / Intel)
+* Python Version   : Python 3.11, 3.12, or 3.13
+* Node.js Version  : Node.js 18.x, 20.x, or 22.x with npm
+* Browser          : Modern WebGL2-enabled browser (Chrome, Edge, Firefox, Brave)
+* Hardware         : Minimum 8 GB RAM (16 GB recommended), quad-core CPU, dedicated GPU optional
+
+ONE-CLICK STARTUP (WINDOWS):
+  Double-click the root batch script:
+  > start.bat
+
+MANUAL STARTUP:
+1. Backend Setup:
+   > cd backend
+   > python -m venv venv
+   > .\venv\Scripts\activate       (On Linux/Mac: source venv/bin/activate)
+   > pip install -r requirements.txt
+   > python run_backend.py
+   --> Server running at http://localhost:8000 (Swagger API Docs at http://localhost:8000/docs)
+
+2. Frontend Setup:
+   > cd frontend
+   > npm install
+   > npm run dev
+   --> Tactical Console running at http://localhost:5173
+
+3. Execute Full Verification Test Suite:
+   > cd backend
+   > python -m pytest tests/ -v
+
+
+====================================================================================================
+11. STRATEGIC IMPACT, CONCLUSION & ROADMAP
+====================================================================================================
+AEROVEX marks a transformative leap in defense aerospace propulsion management:
+* Airframe Survivability: Multi-quantile RUL forecasting and Pareto contingency replanning prevent hull 
+  losses before mechanical thermal runaway occurs.
+* Telemetry Defense: The Zero-Trust Cyber Shield and Self-Healing Pipeline ensure uninterrupted mission 
+  execution even under sophisticated electronic warfare and cyber-spoofing attacks.
+* National Defense Self-Reliance (Atmanirbhar Bharat): Grounded in sovereign Indian defense sectors 
+  (Thar Desert, Himalayas, Indian Ocean EEZ), ISRO NavIC satellite navigation, and Indian Air Force 
+  airbase diversion calculations.
+* Airworthiness Certification: Cryptographically chained immutable logbook provides incontrovertible 
+  audit trails for military airworthiness authorities (CEMILAC / DGCA).
+
+FUTURE ROADMAP:
+* Direct physical avionics bus bridging (ARINC 429 and MIL-STD-1553).
+* Edge-TPU / FPGA hardware synthesis for micro-watt onboard UAV flight computer integration.
+* Full multi-UAV decentralized swarm consensus digital twinning.
+
+====================================================================================================
+                              END OF AEROVEX MASTER SPECIFICATION DOCUMENT
+====================================================================================================

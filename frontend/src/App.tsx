@@ -16,7 +16,6 @@ import { AerospaceBackground } from './components/aerospace/AerospaceBackground'
 import { UAVHeroCenterpiece } from './components/aerospace/UAVHeroCenterpiece';
 import { TechSection } from './components/aerospace/TechSection';
 import { SpecsSection } from './components/aerospace/SpecsSection';
-import { AerospaceFooter } from './components/aerospace/AerospaceFooter';
 import { ContactModal } from './components/aerospace/ContactModal';
 
 // Tactical Pages
@@ -163,10 +162,6 @@ export default function App() {
           {activeTab === 'technology' && (
             <div className="relative w-full h-full overflow-y-auto overflow-x-hidden pt-16">
               <TechSection onLaunchMission={() => setActiveTab('simulator')} />
-              <AerospaceFooter
-                onSelectTab={(tab) => setActiveTab(tab)}
-                onLaunchMission={() => setActiveTab('simulator')}
-              />
             </div>
           )}
 
@@ -174,10 +169,6 @@ export default function App() {
           {activeTab === 'specifications' && (
             <div className="relative w-full h-full overflow-y-auto overflow-x-hidden pt-16">
               <SpecsSection onLaunchMission={() => setActiveTab('simulator')} />
-              <AerospaceFooter
-                onSelectTab={(tab) => setActiveTab(tab)}
-                onLaunchMission={() => setActiveTab('simulator')}
-              />
             </div>
           )}
 

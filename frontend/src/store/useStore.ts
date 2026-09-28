@@ -11,7 +11,7 @@ import { shallow } from 'zustand/vanilla/shallow';
 import { wsService } from '../services/api';
 
 export type RiskLevel = 'LOW' | 'MEDIUM' | 'HIGH';
-export type HealthLabel = 'HEALTHY' | 'DEGRADED' | 'WARNING' | 'CRITICAL' | 'SEVERE';
+export type HealthLabel = 'HEALTHY' | 'CAUTION' | 'DEGRADED' | 'WARNING' | 'CRITICAL' | 'SEVERE';
 export type SimView = 'tactical' | 'chase' | 'cockpit' | 'engine' | 'environment' | 'ai' | 'swarm';
 export type SwarmFormation = 'V_SHAPE' | 'DIAMOND' | 'ECHELON' | 'ORBIT';
 
@@ -228,6 +228,16 @@ export interface SystemState {
   };
   // Theme
   themeMode: 'dark' | 'light';
+
+  // Advanced Autonomous & Physical Telemetry Extensions (Milestones 3-7)
+  paretoReplanning: any | null;
+  cyberShield: any | null;
+  selfHealingEvents: any[];
+  swarm: any | null;
+  gnss: any | null;
+  emergencyDiversionAirfields: any[];
+  maintenanceTaskcards: any[];
+  digitalLogbook: any | null;
 }
 
 const defaultState: SystemState = {
@@ -309,6 +319,14 @@ const defaultState: SystemState = {
     { id: 'uav-04', callsign: 'RELAY-04', role: 'RELAY', battery_pct: 79, rssi_dbm: -58, latency_ms: 17.2, pdr_pct: 97.5, health_pct: 94, status: 'OPTIMAL' },
   ],
   themeMode: 'dark',
+  paretoReplanning: null,
+  cyberShield: null,
+  selfHealingEvents: [],
+  swarm: null,
+  gnss: null,
+  emergencyDiversionAirfields: [],
+  maintenanceTaskcards: [],
+  digitalLogbook: null,
 };
 
 interface Actions {
@@ -361,6 +379,14 @@ const storeApi = createStore<SystemState & Actions>((set, get) => ({
       integrity: data.integrity ?? prev.integrity,
       missionRisk: data.mission_risk ?? prev.missionRisk,
       replanning: data.replanning ?? prev.replanning,
+      paretoReplanning: data.pareto_replanning ?? prev.paretoReplanning,
+      cyberShield: data.cyber_shield ?? prev.cyberShield,
+      selfHealingEvents: data.self_healing_events ?? prev.selfHealingEvents,
+      swarm: data.swarm ?? prev.swarm,
+      gnss: data.gnss ?? prev.gnss,
+      emergencyDiversionAirfields: data.emergency_diversion_airfields ?? prev.emergencyDiversionAirfields,
+      maintenanceTaskcards: data.maintenance_taskcards ?? prev.maintenanceTaskcards,
+      digitalLogbook: data.digital_logbook ?? prev.digitalLogbook,
       uav: uavData,
       edgeMode: data.edge_mode ?? prev.edgeMode,
       bufferedSteps: data.buffered_steps ?? prev.bufferedSteps,

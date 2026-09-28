@@ -395,7 +395,7 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<'matrix' | 'gps' | 'cyber' | 'chat'>('matrix');
 
   return (
-    <div className="dashboard-page w-full h-full flex flex-col overflow-y-auto pb-4">
+    <div className="dashboard-page w-full h-full flex flex-col overflow-y-auto pb-28 [&>*]:flex-shrink-0">
       {/* ── Top Dashboard Workspace Switcher ── */}
       <div className="mx-5 my-2.5 p-1.5 rounded-2xl bg-[#06101c]/80 backdrop-blur-xl border border-[#1a2f4a]/80 shadow-lg flex items-center justify-between gap-3 flex-wrap z-20">
         <div className="flex items-center gap-1.5 overflow-x-auto">
