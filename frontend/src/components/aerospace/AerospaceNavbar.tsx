@@ -15,7 +15,7 @@ export const AerospaceNavbar: React.FC<AerospaceNavbarProps> = ({ activeTab, onS
   const navigate = (tab: NavTab) => { if (tab === 'contact') onOpenContact(); else onSelectTab(tab); setMobileOpen(false); };
   return <header className="reference-nav">
     <div className="reference-nav-inner">
-      <button className="reference-brand" onClick={() => navigate('home')} aria-label="AEROVEX home"><span className="brand-orbit" /><span>AEROVEX</span></button>
+      <button className="reference-brand" onClick={() => navigate('home')} aria-label="VYOMAMEDHA home"><span className="brand-orbit" /><span>VYOMAMEDHA</span></button>
       <nav className="reference-desktop-nav" aria-label="Primary navigation">
         {NAV_LINKS.map(link => <button key={link.key} className={activeTab === link.key ? 'active' : ''} onClick={() => navigate(link.key)}>{link.label}</button>)}
       </nav>

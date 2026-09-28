@@ -85,7 +85,7 @@ function StatusBar() {
           RISK: <span style={{ color: riskColor, fontWeight: 700 }}>{missionRisk.risk_level}</span>
         </span>
         <span style={{ color: '#1a2f4a' }}>|</span>
-        <span className="hidden sm:inline">AEROVEX DEFENSE SYSTEMS</span>
+        <span className="hidden sm:inline">VYOMAMEDHA PROPULSION INTELLIGENCE</span>
         <span style={{ color: '#1a2f4a' }}>|</span>
         <span>SIMULATED DATA · RESEARCH DEMO</span>
       </div>
@@ -98,7 +98,7 @@ function LoadingScreen() {
     <div className="h-full w-full flex items-center justify-center bg-transparent">
       <div className="text-center p-8 rounded-3xl bg-slate-950/80 backdrop-blur-2xl border border-sky-400/20 shadow-2xl">
         <div className="text-xl font-mono font-bold text-white tracking-[0.25em] mb-2">
-          AEROVEX
+          VYOMAMEDHA
         </div>
         <div className="text-xs font-mono text-sky-300/80 tracking-wider">
           LOADING TACTICAL SYSTEMS...

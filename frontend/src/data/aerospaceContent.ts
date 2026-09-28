@@ -33,21 +33,22 @@ export interface GalleryItem {
 
 export const AEROSPACE_CONTENT = {
   brand: {
-    name: 'AEROVEX',
-    tagline: 'ADVANCED AERIAL INTELLIGENCE',
-    subtagline: 'FOR A SAFER WORLD',
-    kicker: 'AUTONOMY • PRECISION • REAL IMPACT',
-    sideKicker: ['EXPLORE', 'MONITOR', 'PROTECT', 'A SAFER TOMORROW'],
+    name: 'VYOMAMEDHA',
+    tagline: 'AI-ENABLED CYBER-PHYSICAL INTELLIGENCE',
+    subtagline: 'FOR UAV ENGINE RELIABILITY',
+    motto: 'Predict. Understand. Protect.',
+    kicker: 'MISSION-AWARE ENGINE INTELLIGENCE',
+    sideKicker: ['PREDICT', 'UNDERSTAND', 'PROTECT', 'AERO-PROPULSION TWIN'],
   },
   hero: {
-    headlinePrefix: 'SKIES',
-    headlineHighlight: 'WITHOUT LIMITS',
+    headlinePrefix: 'MISSION-AWARE',
+    headlineHighlight: 'ENGINE INTELLIGENCE',
     description:
-      'Next-generation autonomous UAV systems for surveillance, mapping and mission-critical operations.',
+      'AI-Enabled Cyber-Physical Intelligence for UAV Engine Reliability. Physics-grounded digital twin, real-time prognostics, and autonomous mission risk replanning.',
     ctaPrimary: 'START MISSION',
     ctaSecondary: 'EXPLORE PLATFORM',
-    bottomLeft: 'ADVANCED AERIAL INTELLIGENCE',
-    bottomRight: 'FOR A SAFER WORLD',
+    bottomLeft: 'PREDICT • UNDERSTAND • PROTECT',
+    bottomRight: 'FOR UAV ENGINE RELIABILITY',
     features: [
       {
         id: 'nav',

@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import {
   ShieldAlert,
   ShieldCheck,
@@ -206,7 +206,7 @@ export function CyberTelemetryDetector({ className = '' }: { className?: string 
           </div>
         </div>
 
-        {/* â”€â”€ Key Distinction Explainer (How AERO-TWIN Tells Them Apart) â”€â”€ */}
+        {/* ── Key Distinction Explainer (How VYOMAMEDHA Tells Them Apart) ── */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
           <div className={`p-3.5 rounded-xl border ${
             isLight ? 'bg-cyan-50/60 border-cyan-500/20' : 'bg-slate-900/70 border-white/10'

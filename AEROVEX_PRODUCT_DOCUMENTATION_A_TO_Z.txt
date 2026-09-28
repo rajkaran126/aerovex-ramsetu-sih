@@ -1,9 +1,11 @@
 ====================================================================================================
-                        A E R O V E X   /   A E R O - T W I N
-        AI-ENABLED REAL-TIME CYBER-PHYSICAL DIGITAL TWIN & AUTONOMOUS PROGNOSTICS PLATFORM
-                     FOR MALE UAV AERO-PISTON ENGINES & MISSION SYSTEMS
+                                    V Y O M A M E D H A
+            AI-ENABLED CYBER-PHYSICAL INTELLIGENCE FOR UAV ENGINE RELIABILITY
+             (Vyoma: Aerospace / UAV Identity  |  Medha: Predictive AI & Twin)
+                     "Predict. Understand. Protect."
+                   Mission-Aware Engine Intelligence Platform
 ====================================================================================================
-Document Version : 4.0.0 (Master Implementation & Full Cyber-Physical Release)
+Document Version : 4.1.0 (Master Brand & Full Cyber-Physical Release)
 Classification   : UNCLASSIFIED / DEFENSE RESEARCH & OPERATIONAL DEMONSTRATOR
 Author / Org     : Team RAMSETU / Smart India Hackathon (SIH) & Aerospace Intelligence Initiative
 File Format      : ASCII Plain Text (.txt)

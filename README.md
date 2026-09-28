@@ -1,4 +1,7 @@
-# AERO-TWIN: AI-Enabled Real-Time Digital Twin for MALE UAV Aero-Piston Engines
+# VYOMAMEDHA: AI-Enabled Cyber-Physical Intelligence for UAV Engine Reliability
+
+> **VYOMAMEDHA** (व्योममेधा) — *Vyoma* (Aerospace / UAV Identity) + *Medha* (AI, Digital Twin & Predictive Intelligence)  
+> **Predict. Understand. Protect.** // *Mission-Aware Engine Intelligence*
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B%20%7C%203.13-blue.svg)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.111%2B-009688.svg)](https://fastapi.tiangolo.com)
@@ -7,9 +10,9 @@
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-v4.0-38B2AC.svg)](https://tailwindcss.com)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-**AERO-TWIN** is a full-stack, research-grade Cyber-Physical Digital Twin and AI Prognostics platform designed for aero-piston engines (e.g. Rotax 914 / 915 iS class) powering Medium-Altitude Long-Endurance (MALE) Unmanned Aerial Vehicles (UAVs).
+**VYOMAMEDHA** (formerly AERO-TWIN / AEROVEX) is a full-stack, military-grade Cyber-Physical Digital Twin and AI Prognostics platform designed for aero-piston engines (e.g. Rotax 914 / 915 iS class) powering Medium-Altitude Long-Endurance (MALE) Unmanned Aerial Vehicles (UAVs).
 
-Engineered to fulfill the pipeline:
+Engineered to fulfill the unbroken cyber-physical loop:
 $$\mathbf{Sense \longrightarrow Verify \longrightarrow Model \longrightarrow Detect \longrightarrow Diagnose \longrightarrow Predict \longrightarrow Simulate \longrightarrow Replan \longrightarrow Advise}$$
 
 ---
