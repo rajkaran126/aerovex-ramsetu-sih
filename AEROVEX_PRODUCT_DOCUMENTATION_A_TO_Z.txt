@@ -5,7 +5,7 @@
                      "Predict. Understand. Protect."
                    Mission-Aware Engine Intelligence Platform
 ====================================================================================================
-Document Version : 4.1.0 (Master Brand & Full Cyber-Physical Release)
+Document Version : 4.2.0 (Interactive Project Demonstration, Glassmorphic Aero Console & Master Brand Release)
 Classification   : UNCLASSIFIED / DEFENSE RESEARCH & OPERATIONAL DEMONSTRATOR
 Author / Org     : Team RAMSETU / Smart India Hackathon (SIH) & Aerospace Intelligence Initiative
 File Format      : ASCII Plain Text (.txt)
@@ -41,6 +41,8 @@ TABLE OF CONTENTS
      R. Multi-Agent LLM Tactical Copilot (Groq Accelerated / Numerical Authority Governed)
      S. Cockpit-Grade 3D Mission Visualizer (Three.js & 5 Camera Director Modes)
      T. Main Tactical Operator Dashboard & Glassmorphic Telemetry Console
+     U. Interactive Mission & System Demonstration Theater (6-Chapter Video Showcase & Failure Matrix)
+     V. Cockpit-Grade Glassmorphic Aerospace Navigation & Hero Section Video Showcase
   6. SUPPORTED DATASETS, AIRWORTHINESS & BENCHMARKS
   7. API & WEBSOCKET SPECIFICATION (REST & HIGH-THROUGHPUT WS)
   8. AUTOMATED TEST SUITE & VERIFICATION RESULTS (36/36 TESTS PASSED)
@@ -617,6 +619,119 @@ The user interface adheres to a military aerospace glassmorphism design:
   and sunlight field conditions.
 
 
+----------------------------------------------------------------------------------------------------
+U. INTERACTIVE MISSION & SYSTEM DEMONSTRATION THEATER (6-CHAPTER VIDEO SHOWCASE & FAILURE MATRIX)
+----------------------------------------------------------------------------------------------------
+VyomaMedha integrates a dedicated, cockpit-grade interactive demonstration theater (accessible via the 
+'Demo' navigation tab) engineered to convey the complete cyber-physical paradigm to flight test directors, 
+defense evaluation panels, and SIH jury evaluators without requiring external presentation tools.
+
+1. HIGH-DEFINITION VIDEO PLAYER & ADAPTIVE PLAYBACK ENGINE:
+   * Native Video Integration: Streams and plays the full aerospace system demonstration video 
+     ('project-demo.mp4') directly inside a high-contrast tactical theater frame.
+   * Playback Controls: Timeline scrubber with instantaneous seeking, live time counter (Current / Total), 
+     play/pause toggle, volume slider with instant mute/unmute, and browser fullscreen expansion.
+   * State Synchronization: Custom event listeners synchronize playback timestamps with interactive chapter 
+     markers, highlighting the active operational phase in real time.
+
+2. 6 INTERACTIVE CHAPTER JUMP MARKERS:
+   Operators and evaluators can instantly seek to any critical phase of the demonstration with single-click 
+   precision:
+   * Chapter 1: CAN Bus Test Bench & Hardware Ingestion
+     - Demonstrates physical STM32 microcontroller data acquisition, optical isolation, and 500 kbps CAN 
+       frame broadcast under real-world dynamometer loading.
+   * Chapter 2: Zero-Trust Cyber Shield & Sensor Tampering Isolation
+     - Showcases live injection of man-in-the-middle sensor freezes and rate-of-change spikes, followed 
+       by sub-200ms isolation and digital twin analytical self-healing reconstruction.
+   * Chapter 3: Analytical Digital Twin & Residual Vector Engine
+     - Illustrates the continuous 7-channel residual computation comparing raw transducers against 
+       first-principles thermodynamic predictions.
+   * Chapter 4: AI Prognostics & Real-Time TreeSHAP Attribution
+     - Demonstrates the local Random Forest fault classifier pinpointing emerging mechanical anomalies 
+       accompanied by live mathematical feature importance attributions.
+   * Chapter 5: Multi-Quantile RUL & Pareto Contingency Replanning
+     - Showcases monotonic P10/P50/P90 flight hour forecasting and multi-objective Pareto optimization 
+       generating 3 distinct return-to-base and mission-contingency flight profiles.
+   * Chapter 6: SwarmNet Tactical Mesh & Cryptographic Blackbox Ledger
+     - Demonstrates 4-UAV mesh relay communication under electronic warfare jamming and the mathematically 
+       tamper-evident SHA-256 chained airworthiness logbook.
+
+3. CORE VALUE PROPOSITION COMPARISON MATRIX:
+   * The "Blind Threshold" Trap vs. Physics-Informed Baseline:
+     - Traditional avionics rely on fixed warning thresholds (e.g., CHT > 230 deg C), triggering alarms 
+       only after critical damage has occurred.
+     - VyomaMedha's analytical twin computes the expected thermodynamic state dynamically as a function 
+       of altitude, ambient air density, airspeed, and throttle, catching micro-divergences hours before 
+       they cross static limits.
+   * Zero-Trust Cyber-Physical Defense:
+     - 12 mathematical vectors continuously validate signal continuity, physics correlation, and temporal 
+       jitter, preventing hostile cyber-spoofing from deceiving the autopilot or human remote pilot.
+   * The Numerical Authority Rule:
+     - Hard physics equations and calibrated machine learning models maintain absolute sovereignty over 
+       all flight calculations, preventing generative AI from hallucinating critical telemetry.
+
+4. 7 PHYSICAL FAILURE MODES INTERACTIVE MATRIX:
+   The demonstration console incorporates a comprehensive diagnostic reference matrix detailing all 7 
+   aerospace piston failure modes:
+   * Mode 1: Cooling Jacket Leak / Boiling (Residual Signature: High CHT Residual + Normal EGT + Low Coolant Flow)
+   * Mode 2: Turbocharger Wastegate Seizure (Residual Signature: MAP Loss + High Turbine Pressure Ratio Residual)
+   * Mode 3: Fuel Injector Partial Clogging (Residual Signature: Lean AFR + High EGT Residual on Affected Cylinder)
+   * Mode 4: Oil Pump Cavitation / Pressure Loss (Residual Signature: Oil Pressure Drop + Elevated Oil Temp Residual)
+   * Mode 5: Piston Ring Blow-By (Residual Signature: Crankcase Pressure Rise + Gradual Power Deficit Residual)
+   * Mode 6: Exhaust Valve Micro-Cracking (Residual Signature: High-Frequency EGT Flutter + Thermal Asymmetry)
+   * Mode 7: Spark Plug Fouling / Partial Misfire (Residual Signature: RPM Jitter + Cyclic Vibration Spike Residual)
+
+5. UNBROKEN CYBER-PHYSICAL WORKFLOW PIPELINE:
+   Visualizes the end-to-end operational sequence:
+   [SENSE] Physical CAN / Virtual Hardware
+     --> [VERIFY] 12-Vector Zero-Trust Shield
+     --> [MODEL] Thermodynamic Digital Twin Baseline
+     --> [DETECT] 7-Channel Residual Vector Engine
+     --> [DIAGNOSE] Calibrated Fault Classification
+     --> [EXPLAIN] Real-Time TreeSHAP Attribution
+     --> [PREDICT] Monotonic Multi-Quantile RUL (P10/P50/P90)
+     --> [REPLAN] Multi-Objective Pareto Optimization
+     --> [LOG] SHA-256 Chained Airworthiness Blackbox
+
+6. DIRECT NAVIGATION LAUNCHERS:
+   Provides one-click tactical jumping directly into operational modules:
+   * Launch 3D Mission Visualizer (Three.js airframe, HUD, and thermal camera modes)
+   * Launch Digital Twin Console (Real-time telemetry, twin baselines, and health indices)
+   * Launch Engineering Specifications (Hardware schematics, pinouts, and test protocols)
+
+
+----------------------------------------------------------------------------------------------------
+V. COCKPIT-GRADE GLASSMORPHIC AEROSPACE NAVIGATION & HERO SECTION VIDEO SHOWCASE
+----------------------------------------------------------------------------------------------------
+1. COCKPIT-GRADE GLASSMORPHIC NAVIGATION BAR:
+   * Aesthetic Formulation: Ultra-sleek translucent glassmorphism utilizing high-index backdrop-filter 
+     blurring (backdrop-blur-xl bg-slate-950/70 border-b border-cyan-500/20) with fine specular highlights.
+   * Brand Lockup: Prominently renders the official 'VYOMAMEDHA' identity with cyan hexagonal shield iconography, 
+     displaying the subtitle "AI-Enabled Cyber-Physical Intelligence for UAV Engine Reliability" and tactical 
+     motto "Predict. Understand. Protect."
+   * Live Operational Status Beacon: Integrated pulse indicator displaying real-time engine telemetry streaming 
+     status (HEALTHY / DEGRADED / SPOOFED / CRITICAL) alongside WebSocket heartbeat health.
+   * Navigation Architecture: Modular tabs providing instant routing across all primary views:
+     - Operations Console (Main Telemetry, Twin, AI, and Fleet Grid)
+     - 3D Simulator (WebGL2 Cockpit & Orbital Airframe Visualizer)
+     - SwarmNet Tactical Fleet (4-UAV Mesh Network & EW Jamming Monitor)
+     - Prescriptive Maintenance (ATA-Chapter Taskcards & Cryptographic Ledger)
+     - Systems & Specifications (CAN Hardware Architecture & Benchmark Registry)
+     - Project Demo Theater (Full Video Demonstration & Failure Matrix)
+   * Uncluttered Viewport: Sub-pages (including Systems & Specifications) feature streamlined edge-to-edge 
+     scrolling with redundant footers removed to maximize tactical screen real estate.
+
+2. UAV HERO CENTERPIECE VIDEO INTEGRATION:
+   * Cinematic Airframe & Engine Footage: The primary landing centerpiece seamlessly plays high-definition 
+     operational UAV video footage ('hero-uav.mp4') looping smoothly in an ambient widescreen aerospace viewport.
+   * Icon-Only Audio Toggle Control: Positioned discreetly in the bottom-right corner of the video frame, 
+     featuring a glassmorphic circular button with an icon-only volume state indicator (Volume2 when active, 
+     VolumeX when muted). All extraneous text labels are eliminated to maintain a clutter-free military aesthetic.
+   * Direct Action Triggers:
+     - "WATCH DEMO" button providing immediate single-click transition into the Project Demonstration Theater.
+     - "LAUNCH 3D MISSION SIMULATOR" providing direct entry into the WebGL2 flight visualizer.
+
+
 ====================================================================================================
 6. SUPPORTED DATASETS, AIRWORTHINESS & BENCHMARKS
 ====================================================================================================
@@ -786,6 +901,11 @@ MANUAL STARTUP:
 3. Execute Full Verification Test Suite:
    > cd backend
    > python -m pytest tests/ -v
+
+4. Access Project Demonstration Theater:
+   In your browser, click the 'Demo' tab on the top navigation bar (or navigate to http://localhost:5173 
+   with activeTab 'demo') to access the high-definition project video showcase, 6 interactive chapter 
+   jump points, value proposition comparison, and 7-mode failure diagnostic matrix.
 
 
 ====================================================================================================
